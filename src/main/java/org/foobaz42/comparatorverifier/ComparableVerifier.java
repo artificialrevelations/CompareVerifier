@@ -104,9 +104,9 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                                          final List<A> second) {
         for (A fa : first) {
             for (final A sa : second) {
-                final int a_b = Float.floatToIntBits(Math.signum(fa.compareTo(sa)));
-                final int b_a = Float.floatToIntBits(Math.signum(sa.compareTo(fa)));
-                if (a_b != -b_a)
+                final float a_b = Math.signum(fa.compareTo(sa));
+                final float b_a = -Math.signum(sa.compareTo(fa));
+                if (a_b != b_a)
                     throw new AssertionError("Instances do not implement a total order!");
             }
         }
@@ -122,7 +122,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 throw new AssertionError("Instance is equal to null!");
             }
 
-            boolean contractIsBroken = false;
+            boolean contractIsBroken;
             try {
                 instance.compareTo(null);
                 contractIsBroken = true;
@@ -145,7 +145,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
             final boolean equals = instance.equals(a);
             final boolean compareTo = instance.compareTo(a) == 0;
             if (equals != compareTo)
-                throw new AssertionError("Natural ordering is not consistent with equals!");
+                throw new AssertionError("CompareTo is not consistent with equals!");
         }
     }
 

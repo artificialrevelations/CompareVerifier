@@ -16,7 +16,7 @@
 package org.foobaz42.comparatorverifier;
 
 public final class Creators {
-    public static <A> Creator<A> always(final A value) {
+    public static <A, B extends A> Creator<A> always(final B value) {
         return new Creator<A>() {
             @Override
             public A create() {
