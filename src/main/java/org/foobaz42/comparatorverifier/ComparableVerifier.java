@@ -25,8 +25,9 @@ public final class ComparableVerifier<A extends Comparable<A>> {
 
     private boolean suppressConsistentWithEquals = false;
     private boolean suppressExceptionOnCompareToNull = false;
+    private boolean suppressExceptionOnNullInstance = false;
 
-    private int amountOfChecks = 10;
+    private int amountOfChecks = 1;
 
     private ComparableVerifier(final Creator<A> lessCreator,
                                final Creator<A> equalCreator,
@@ -65,6 +66,11 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         return this;
     }
 
+    public ComparableVerifier<A> suppressExceptionOnNullInstance(final boolean suppressCheck) {
+        suppressExceptionOnNullInstance = suppressCheck;
+        return this;
+    }
+
     public ComparableVerifier<A> withAmountOfChecks(final int amount) {
         if (amount <= 0)
             throw new IllegalArgumentException("Amount of checks needs to be greater then zero!");
@@ -90,7 +96,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         verifyReverseSignumCase(lessInstances, greaterInstances);
 
         //TODO: testing transitivity
-        //TODO: test a.compareTo(c) == b.compareTo(c) => a.compareTo(b) == 0
+        //TODO: test sig(a.compareTo(c)) == sig(b.compareTo(c)) => sig(a.compareTo(b)) == 0
     }
 
     // sig(a.compareTo(b)) == -sig(b.compareTo(a))
@@ -101,7 +107,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 final int a_b = Float.floatToIntBits(Math.signum(fa.compareTo(sa)));
                 final int b_a = Float.floatToIntBits(Math.signum(sa.compareTo(fa)));
                 if (a_b != -b_a)
-                    throw new AssertionError("Instances are not truly equal!");
+                    throw new AssertionError("Instances do not implement a total order!");
             }
         }
     }
@@ -148,7 +154,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         final List<A> instances = new ArrayList<A>(amount);
         for (int i = 0; i < amount; i++) {
             final A instance = creator.create();
-            if (null == instance)
+            if (null == instance && !suppressExceptionOnNullInstance)
                 throw new IllegalArgumentException("Creator should not create null instances!");
 
             instances.add(instance);

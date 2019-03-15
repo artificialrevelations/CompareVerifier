@@ -15,13 +15,17 @@
  */
 package org.foobaz42.comparatorverifier;
 
-/**
- * @param <A>
- */
-public final class ComparatorVerifier<A> {
+public final class Creators {
+    public static <A> Creator<A> always(final A value) {
+        return new Creator<A>() {
+            @Override
+            public A create() {
+                return value;
+            }
+        };
+    }
 
-
-    public boolean someLibraryMethod() {
-        return true;
+    public static <A> Creator<A> nullValue() {
+        return always(null);
     }
 }
