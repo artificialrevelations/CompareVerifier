@@ -15,11 +15,16 @@
  */
 package org.foobaz42.comparatorverifier.implementations;
 
-public class Correct implements Comparable<Correct> {
-    public final int value;
+//TODO: doc
+// this is using compareTo from base
+// but has its own equals defined
+public class InconsistentWithEquals extends Correct {
+    public final int another;
 
-    public Correct(final int value) {
-        this.value = value;
+    public InconsistentWithEquals(final int value,
+                                  final int another) {
+        super(value);
+        this.another = another;
     }
 
     @Override
@@ -27,26 +32,26 @@ public class Correct implements Comparable<Correct> {
         if (this == other)
             return true;
 
-        if (null == other || getClass() != other.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
 
-        final Correct that = (Correct) other;
+        if (!super.equals(other))
+            return false;
 
-        return value == that.value;
+        final InconsistentWithEquals that = (InconsistentWithEquals) other;
+
+        return another == that.another;
     }
 
     @Override
     public int hashCode() {
-        return value;
-    }
-
-    @Override
-    public int compareTo(final Correct other) {
-        return value - other.value;
+        int result = super.hashCode();
+        result = 31 * result + another;
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Correct{ value=" + value + '}';
+        return "InconsistentWithEquals{ another=" + another + ", value=" + value + '}';
     }
 }
