@@ -15,17 +15,8 @@
  */
 package org.foobaz42.comparatorverifier;
 
-public final class Creators {
-    public static <A, B extends A> Creator<A> always(final B value) {
-        return new Creator<A>() {
-            @Override
-            public A create() {
-                return value;
-            }
-        };
-    }
+import java.util.List;
 
-    public static <A> Creator<A> nullValue() {
-        return always(null);
-    }
+public interface VerificationInstancesCreator<A> {
+    List<A> create();
 }

@@ -15,44 +15,32 @@
  */
 package org.foobaz42.comparatorverifier;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class ComparableVerifier<A extends Comparable<A>> {
-    private final Creator<A> lessCreator;
-    private final Creator<A> greaterCreator;
-    private final Creator<A> equalCreator;
+    private final VerificationInstancesCreator<A> lesserCreator;
+    private final VerificationInstancesCreator<A> greaterCreator;
+    private final VerificationInstancesCreator<A> equalCreator;
 
     private boolean suppressConsistentWithEquals = false;
+    private boolean suppressEqualsToNullReturnsFalse = false;
     private boolean suppressExceptionOnCompareToNull = false;
-    private boolean suppressExceptionOnNullInstance = false;
 
-    private int amountOfChecks = 1;
-
-    private ComparableVerifier(final Creator<A> lessCreator,
-                               final Creator<A> equalCreator,
-                               final Creator<A> greaterCreator) {
-        this.lessCreator = lessCreator;
+    private ComparableVerifier(final VerificationInstancesCreator<A> lesserCreator,
+                               final VerificationInstancesCreator<A> equalCreator,
+                               final VerificationInstancesCreator<A> greaterCreator) {
+        this.lesserCreator = lesserCreator;
         this.greaterCreator = greaterCreator;
         this.equalCreator = equalCreator;
     }
 
     public static <A extends Comparable<A>> ComparableVerifier<A> forInstances(
-            final Creator<A> lessCreator,
-            final Creator<A> equalCreator,
-            final Creator<A> greaterCreator) {
-
-        if (null == lessCreator)
-            throw new IllegalArgumentException("Less creator cannot be null!");
-
-        if (null == equalCreator)
-            throw new IllegalArgumentException("Equal creator cannot be null!");
-
-        if (null == greaterCreator)
-            throw new IllegalArgumentException("Greater creator cannot be null!");
+            final VerificationInstancesCreator<A> lesserCreator,
+            final VerificationInstancesCreator<A> equalCreator,
+            final VerificationInstancesCreator<A> greaterCreator) {
 
         return new ComparableVerifier<A>(
-                lessCreator, equalCreator, greaterCreator
+                lesserCreator, equalCreator, greaterCreator
         );
     }
 
@@ -66,34 +54,47 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         return this;
     }
 
-    public ComparableVerifier<A> suppressExceptionOnNullInstance(final boolean suppressCheck) {
-        suppressExceptionOnNullInstance = suppressCheck;
-        return this;
-    }
-
-    public ComparableVerifier<A> withAmountOfChecks(final int amount) {
-        if (amount <= 0)
-            throw new IllegalArgumentException("Amount of checks needs to be greater then zero!");
-        amountOfChecks = amount;
+    public ComparableVerifier<A> suppressEqualsToNullReturnsFalse(final boolean suppressCheck) {
+        suppressEqualsToNullReturnsFalse = suppressCheck;
         return this;
     }
 
     public void verify() {
-        final List<A> lessInstances = getList(lessCreator, amountOfChecks);
-        // we want at least two instances that are supposedly the same
-        final List<A> equalInstances = getList(equalCreator, amountOfChecks + 1);
-        final List<A> greaterInstances = getList(greaterCreator, amountOfChecks);
+        // verify that the instances creators are not null (obvious check)
+        verifyInstancesCreatorIsNotNull(lesserCreator, "lesser");
+        verifyInstancesCreatorIsNotNull(equalCreator, "equal");
+        verifyInstancesCreatorIsNotNull(greaterCreator, "greater");
 
+        // verify that the instances List is not null (obvious check)
+        final List<A> lessInstances =
+                verifyInstancesIsNotNull(lesserCreator, "lesser");
+        final List<A> equalInstances =
+                verifyInstancesIsNotNull(equalCreator, "equal");
+        final List<A> greaterInstances =
+                verifyInstancesIsNotNull(greaterCreator, "greater");
+
+        // verify that the returned instances are consistent with equals
+        // we only check the instances created by the Equal instances creator
+        // as they are supposed to be the same in terms of equals implementation
         verifyCompareToConsistentWithEquals(equalInstances);
 
+        // verify that the returned instances return false when checked for equality
+        // with null
+        verifyEqualsToNullReturnsFalse(lessInstances);
+        verifyEqualsToNullReturnsFalse(equalInstances);
+        verifyEqualsToNullReturnsFalse(greaterInstances);
+
+        // verify that the returned instances throw an exception when compared
+        // to null
         verifyExceptionOnCompareToNull(lessInstances);
         verifyExceptionOnCompareToNull(equalInstances);
         verifyExceptionOnCompareToNull(greaterInstances);
 
-        verifyReverseSignumCase(equalInstances, equalInstances);
-        verifyReverseSignumCase(equalInstances, lessInstances);
-        verifyReverseSignumCase(equalInstances, greaterInstances);
-        verifyReverseSignumCase(lessInstances, greaterInstances);
+        //TODO: add unit tests, create signum that returns int [-1, 0, 1] instead of float
+//        verifyReverseSignumCase(equalInstances, equalInstances);
+//        verifyReverseSignumCase(equalInstances, lessInstances);
+//        verifyReverseSignumCase(equalInstances, greaterInstances);
+//        verifyReverseSignumCase(lessInstances, greaterInstances);
 
         //TODO: testing transitivity
         //TODO: test sig(a.compareTo(c)) == sig(b.compareTo(c)) => sig(a.compareTo(b)) == 0
@@ -112,16 +113,24 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         }
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
-    private void verifyExceptionOnCompareToNull(final List<A> instances) {
-        if (suppressExceptionOnCompareToNull)
+    @SuppressWarnings("ConstantConditions")
+    private void verifyEqualsToNullReturnsFalse(final List<A> instances) {
+        if (suppressEqualsToNullReturnsFalse)
             return;
 
         for (final A instance : instances) {
             if (instance.equals(null)) {
                 throw new AssertionError("Instance is equal to null!");
             }
+        }
+    }
 
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
+    private void verifyExceptionOnCompareToNull(final List<A> instances) {
+        if (suppressExceptionOnCompareToNull)
+            return;
+
+        for (final A instance : instances) {
             boolean contractIsBroken;
             try {
                 instance.compareTo(null);
@@ -136,12 +145,12 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         }
     }
 
-    private void verifyCompareToConsistentWithEquals(final List<A> equalInstances) {
+    private void verifyCompareToConsistentWithEquals(final List<A> instances) {
         if (suppressConsistentWithEquals)
             return;
 
-        final A instance = equalInstances.get(0);
-        for (final A a : equalInstances) {
+        final A instance = instances.get(0);
+        for (final A a : instances) {
             final boolean equals = instance.equals(a);
             final boolean compareTo = instance.compareTo(a) == 0;
             if (equals != compareTo)
@@ -149,16 +158,17 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         }
     }
 
-    private List<A> getList(final Creator<A> creator,
-                            final int amount) {
-        final List<A> instances = new ArrayList<A>(amount);
-        for (int i = 0; i < amount; i++) {
-            final A instance = creator.create();
-            if (null == instance && !suppressExceptionOnNullInstance)
-                throw new IllegalArgumentException("Creator should not create null instances!");
+    private static <A> void verifyInstancesCreatorIsNotNull(final VerificationInstancesCreator<A> creator,
+                                                            final String type) {
+        if (null == creator)
+            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot be null!");
+    }
 
-            instances.add(instance);
-        }
+    private static <A> List<A> verifyInstancesIsNotNull(final VerificationInstancesCreator<A> creator,
+                                                        final String type) {
+        final List<A> instances = creator.create();
+        if (null == instances)
+            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot return null instances!");
         return instances;
     }
 }
