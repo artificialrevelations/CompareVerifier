@@ -4,9 +4,9 @@ ComparatorVerifier is a pure Java library that can be used in Junit tests to ver
 By default verification includes:
  * compareTo being consistent with equals
  * compareTo failing on a null argument
- * satisfying `sig(a.compareTo(b)) == -sig(b.compareTo(a))`
- * satisfying `sig(a.compareTo(c)) == sig(b.compareTo(c)) => sig(a.compareTo(b)) == 0`
- * satisfying `sig(a.compareTo(b)) > 0 && sig(b.compareTo(c)) > 0 => sig(a.compareTo(c)) > 0`
+ * satisfying `sgn(a.compareTo(b)) == -sgn(b.compareTo(a))`
+ * satisfying `sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0`
+ * satisfying `sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0`
  
 Usage
 --------
