@@ -1,5 +1,5 @@
-# ComparatorVerifier
-ComparatorVerifier is a pure Java library that can be used in Junit tests to verify that classes implementing `Comparable` interfaces are defined correctly.
+# CompareVerifier
+CompareVerifier is a pure Java library that can be used in Junit tests to verify that classes implementing `Comparable` interfaces are defined correctly.
 
 By default verification includes:
  * compareTo being consistent with equals
@@ -81,6 +81,5 @@ There are several missing things:
 - transitivity checks
 - other suppress options
 - detailed usage examples
-- documentation
 - github release
 - CI
