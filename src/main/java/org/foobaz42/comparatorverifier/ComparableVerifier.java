@@ -23,9 +23,9 @@ import java.util.List;
  * <p>
  * By default verifier performs following checks if the implementation:
  * <ul>
- * <li>satisfies sgn(a.compareTo(b)) == -sgn(b.compareTo(a))</li>
- * <li>satisfies sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0</li>
- * <li>satisfies sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0</li>
+ * <li>satisfies {@code sgn(a.compareTo(b)) == -sgn(b.compareTo(a))}</li>
+ * <li>satisfies {@code sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0}</li>
+ * <li>satisfies {@code sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0}</li>
  * <li>is consistent with equals</li>
  * </ul>
  * <p>
