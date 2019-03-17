@@ -10,6 +10,8 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Enclosed.class)
@@ -37,7 +39,7 @@ public class ComparableVerifierTest {
     @SuppressWarnings("ConstantConditions")
     public static class ArgumentVerification {
         @Rule
-        public ExpectedException mExpectedException = ExpectedException.none();
+        public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void should_throw_If_Lesser_Creator_is_Null() {
@@ -48,8 +50,8 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.always(new Correct(100));
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (lesser) cannot be null!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot be null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -65,8 +67,8 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.always(new Correct(100));
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (equal) cannot be null!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (equal) cannot be null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -82,8 +84,8 @@ public class ComparableVerifierTest {
                     VerificationInstancesCreators.always(new Correct(42));
             final VerificationInstancesCreator<Correct> greater = null;
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (greater) cannot be null!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (greater) cannot be null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -100,8 +102,8 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.always(new Correct(100));
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (lesser) cannot return null instances!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot return null instances!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -118,8 +120,8 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.always(new Correct(100));
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (equal) cannot return null instances!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (equal) cannot return null instances!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -136,8 +138,8 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.nullInstances();
 
-            mExpectedException.expect(IllegalArgumentException.class);
-            mExpectedException.expectMessage("VerificationInstancesCreator (greater) cannot return null instances!");
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (greater) cannot return null instances!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -147,7 +149,7 @@ public class ComparableVerifierTest {
 
     public static class SuppressConsistentWithEquals {
         @Rule
-        public ExpectedException mExpectedException = ExpectedException.none();
+        public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void should_allow_inconsistent_instances() {
@@ -189,8 +191,8 @@ public class ComparableVerifierTest {
                             new Correct(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("CompareTo is not consistent with equals!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("CompareTo is not consistent with equals!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -201,7 +203,7 @@ public class ComparableVerifierTest {
 
     public static class SuppressEqualsToNullReturnsFalse {
         @Rule
-        public ExpectedException mExpectedException = ExpectedException.none();
+        public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void should_allow_Lesser_instances_equal_to_null() {
@@ -285,8 +287,8 @@ public class ComparableVerifierTest {
                             new Correct(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("Instance is equal to null!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("Instance is equal to null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -310,8 +312,8 @@ public class ComparableVerifierTest {
                             new Correct(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("Instance is equal to null!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("Instance is equal to null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -335,8 +337,8 @@ public class ComparableVerifierTest {
                             new EqualToNull(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("Instance is equal to null!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("Instance is equal to null!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -347,7 +349,7 @@ public class ComparableVerifierTest {
 
     public static class SuppressExceptionOnCompareToNull {
         @Rule
-        public ExpectedException mExpectedException = ExpectedException.none();
+        public ExpectedException expectedException = ExpectedException.none();
 
         @Test
         public void should_allow_Lesser_instances_compareTo_null() {
@@ -431,8 +433,8 @@ public class ComparableVerifierTest {
                             new Correct(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("CompareTo null should throw an exception!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -456,8 +458,8 @@ public class ComparableVerifierTest {
                             new Correct(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("CompareTo null should throw an exception!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
@@ -481,13 +483,44 @@ public class ComparableVerifierTest {
                             new CompareToNull(100)
                     );
 
-            mExpectedException.expect(AssertionError.class);
-            mExpectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("CompareTo null should throw an exception!");
 
             // when:
             ComparableVerifier.forInstances(lesser, equal, greater)
                     .suppressExceptionOnCompareToNull(false)
                     .verify();
+        }
+    }
+
+    public static class Verify {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void test() {
+            // given:
+            final VerificationInstancesCreator<BigDecimal> lesser =
+                    VerificationInstancesCreators.always(
+                            new BigDecimal("0.0")
+                    );
+            final VerificationInstancesCreator<BigDecimal> equal =
+                    VerificationInstancesCreators.always(
+                            new BigDecimal("42.0"),
+                            new BigDecimal("42.00")
+                    );
+            final VerificationInstancesCreator<BigDecimal> greater =
+                    VerificationInstancesCreators.always(
+                            new BigDecimal("100.0")
+                    );
+
+//            expectedException.expect(AssertionError.class);
+//            expectedException.expectMessage("Instances do not implement a total order!");
+//
+//            // when:
+//            ComparableVerifier.forInstances(lesser, equal, greater)
+//                    .suppressConsistentWithEquals(true)
+//                    .verify();
         }
     }
 }

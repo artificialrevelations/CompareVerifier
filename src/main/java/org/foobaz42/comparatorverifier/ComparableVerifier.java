@@ -90,23 +90,25 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         verifyExceptionOnCompareToNull(equalInstances);
         verifyExceptionOnCompareToNull(greaterInstances);
 
-        //TODO: add unit tests, create signum that returns int [-1, 0, 1] instead of float
-//        verifyReverseSignumCase(equalInstances, equalInstances);
-//        verifyReverseSignumCase(equalInstances, lessInstances);
-//        verifyReverseSignumCase(equalInstances, greaterInstances);
-//        verifyReverseSignumCase(lessInstances, greaterInstances);
+        // verify that sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
+        verifyReverse(equalInstances, equalInstances);
+        verifyReverse(equalInstances, lessInstances);
+        verifyReverse(equalInstances, greaterInstances);
+        verifyReverse(lessInstances, greaterInstances);
 
-        //TODO: testing transitivity
-        //TODO: test sig(a.compareTo(c)) == sig(b.compareTo(c)) => sig(a.compareTo(b)) == 0
+        // TODO: testing transitivity:
+        // TODO: test sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
+        // TODO: test sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0
     }
 
-    // sig(a.compareTo(b)) == -sig(b.compareTo(a))
-    private void verifyReverseSignumCase(final List<A> first,
-                                         final List<A> second) {
+    // sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
+    // TODO: a.compareTo(b) should throw exception iff b.compareTo(a) throws
+    private void verifyReverse(final List<A> first,
+                               final List<A> second) {
         for (A fa : first) {
             for (final A sa : second) {
-                final float a_b = Math.signum(fa.compareTo(sa));
-                final float b_a = -Math.signum(sa.compareTo(fa));
+                final int a_b = Math2.sgn(fa.compareTo(sa));
+                final int b_a = -Math2.sgn(sa.compareTo(fa));
                 if (a_b != b_a)
                     throw new AssertionError("Instances do not implement a total order!");
             }
