@@ -15,9 +15,8 @@
  */
 package org.foobaz42.comparatorverifier.implementations;
 
-//TODO: doc
-// this is using compareTo from base
-// but has its own equals defined
+// this is using compareTo from base class Correct
+// but has its own equals defined which causes inconsistency
 public class InconsistentWithEquals extends Correct {
     public final int another;
 

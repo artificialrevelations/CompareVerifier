@@ -21,11 +21,11 @@ public class ComparableVerifierTest {
         public void should_create_non_Null_Verifier_instance() {
             // given:
             final VerificationInstancesCreator<Correct> less =
-                    VerificationInstancesCreators.always(new Correct(0));
+                    VerificationInstancesCreators.from(new Correct(0));
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(new Correct(42));
+                    VerificationInstancesCreators.from(new Correct(42));
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(new Correct(100));
+                    VerificationInstancesCreators.from(new Correct(100));
 
             // when:
             final ComparableVerifier<Correct> verifier =
@@ -46,9 +46,9 @@ public class ComparableVerifierTest {
             // given:
             final VerificationInstancesCreator<Correct> lesser = null;
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(new Correct(42));
+                    VerificationInstancesCreators.from(new Correct(42));
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(new Correct(100));
+                    VerificationInstancesCreators.from(new Correct(100));
 
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot be null!");
@@ -63,10 +63,10 @@ public class ComparableVerifierTest {
         public void should_throw_If_Equal_Creator_is_Null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(new Correct(0));
+                    VerificationInstancesCreators.from(new Correct(0));
             final VerificationInstancesCreator<Correct> equal = null;
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(new Correct(100));
+                    VerificationInstancesCreators.from(new Correct(100));
 
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("VerificationInstancesCreator (equal) cannot be null!");
@@ -81,9 +81,9 @@ public class ComparableVerifierTest {
         public void should_throw_If_Greater_Creator_is_Null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(new Correct(0));
+                    VerificationInstancesCreators.from(new Correct(0));
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(new Correct(42));
+                    VerificationInstancesCreators.from(new Correct(42));
             final VerificationInstancesCreator<Correct> greater = null;
 
             expectedException.expect(IllegalArgumentException.class);
@@ -101,9 +101,9 @@ public class ComparableVerifierTest {
             final VerificationInstancesCreator<Correct> lesser =
                     VerificationInstancesCreators.nullInstances();
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(new Correct(42));
+                    VerificationInstancesCreators.from(new Correct(42));
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(new Correct(100));
+                    VerificationInstancesCreators.from(new Correct(100));
 
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot return null instances!");
@@ -118,11 +118,11 @@ public class ComparableVerifierTest {
         public void should_throw_If_created_Equal_instances_is_Null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(new Correct(0));
+                    VerificationInstancesCreators.from(new Correct(0));
             final VerificationInstancesCreator<Correct> equal =
                     VerificationInstancesCreators.nullInstances();
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(new Correct(100));
+                    VerificationInstancesCreators.from(new Correct(100));
 
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("VerificationInstancesCreator (equal) cannot return null instances!");
@@ -137,9 +137,9 @@ public class ComparableVerifierTest {
         public void should_throw_If_created_Greater_instances_is_Null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(new Correct(0));
+                    VerificationInstancesCreators.from(new Correct(0));
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(new Correct(42));
+                    VerificationInstancesCreators.from(new Correct(42));
             final VerificationInstancesCreator<Correct> greater =
                     VerificationInstancesCreators.nullInstances();
 
@@ -161,16 +161,16 @@ public class ComparableVerifierTest {
         public void should_allow_inconsistent_instances() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new InconsistentWithEquals(42, 0),
                             new InconsistentWithEquals(42, 1)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -185,16 +185,16 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_inconsistent_instances() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new InconsistentWithEquals(42, 0),
                             new InconsistentWithEquals(42, 1)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -215,16 +215,16 @@ public class ComparableVerifierTest {
 
             // given:
             final VerificationInstancesCreator<BigDecimal> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new BigDecimal("0.0")
                     );
             final VerificationInstancesCreator<BigDecimal> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new BigDecimal("42.0"),
-                            new BigDecimal("42.00")
+                            new BigDecimal("42.00") //different precision although the same
                     );
             final VerificationInstancesCreator<BigDecimal> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new BigDecimal("100.0")
                     );
 
@@ -247,15 +247,15 @@ public class ComparableVerifierTest {
         public void should_allow_Lesser_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -270,15 +270,15 @@ public class ComparableVerifierTest {
         public void should_allow_Equal_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -293,15 +293,15 @@ public class ComparableVerifierTest {
         public void should_allow_Greater_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(100)
                     );
 
@@ -316,15 +316,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Lesser_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -342,15 +342,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Equal_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -368,15 +368,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Greater_instances_equal_to_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new EqualToNull(100)
                     );
 
@@ -399,15 +399,15 @@ public class ComparableVerifierTest {
         public void should_allow_Lesser_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -422,15 +422,15 @@ public class ComparableVerifierTest {
         public void should_allow_Equal_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -445,15 +445,15 @@ public class ComparableVerifierTest {
         public void should_allow_Greater_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(100)
                     );
 
@@ -468,15 +468,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Lesser_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -494,15 +494,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Equal_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100)
                     );
 
@@ -520,15 +520,15 @@ public class ComparableVerifierTest {
         public void should_NOT_allow_Greater_instances_compareTo_null() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new CompareToNull(100)
                     );
 
@@ -548,20 +548,20 @@ public class ComparableVerifierTest {
         public void should_pass_for_all_instances() {
             // given:
             final VerificationInstancesCreator<Correct> lesser =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(0),
                             new Correct(1),
                             new Correct(2),
                             new Correct(3)
                     );
             final VerificationInstancesCreator<Correct> equal =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(42),
                             new Correct(42),
                             new Correct(42)
                     );
             final VerificationInstancesCreator<Correct> greater =
-                    VerificationInstancesCreators.always(
+                    VerificationInstancesCreators.from(
                             new Correct(100),
                             new Correct(101),
                             new Correct(102)
