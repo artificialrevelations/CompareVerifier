@@ -29,11 +29,9 @@ Usage
                 new BigDecimal("303.0")
 	    );
     
-    ComparableVerifier.<Foo>forInstances(
-        lessInstancesCreator,
-        equalInstancesCreator,
-        greaterInstancesCreator
-    ).verify();    
+    ComparableVerifier
+        .<Foo>forInstances(lesserCreator, equalCreator, greaterCreator)
+	.verify();    
 ```
 
 Where:
@@ -45,14 +43,11 @@ Where:
 It's possible to disable one or more of the default verification checks by using set of "suppress" methods.
 
 ```java
-    ComparableVerifier.<Foo>forInstances(
-        lessInstancesCreator,
-        equalInstancesCreator,
-        greaterInstancesCreator
-    )
-    .suppressConsistentWithEquals(true)
-    .suppressExceptionOnCompareToNull(true)
-    .verify(); 
+    ComparableVerifier
+        .<Foo>forInstances(lesserCreator, equalCreator, greaterCreator)
+        .suppressConsistentWithEquals(true)
+        .suppressExceptionOnCompareToNull(true)
+        .verify(); 
 ```
 
 Download
