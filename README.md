@@ -68,3 +68,6 @@ There are several missing things:
 - transitivity checks
 - other suppress options
 - detailed usage examples
+- documentation
+- github release
+- CI
