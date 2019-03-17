@@ -44,6 +44,7 @@ import java.util.List;
  *             new BigDecimal("303.0")
  *         );
  * }
+ * </pre>
  *
  * @see VerificationInstancesCreator
  * @see ComparableVerifier
