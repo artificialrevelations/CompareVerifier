@@ -17,6 +17,19 @@ package org.foobaz42.comparatorverifier;
 
 import java.util.List;
 
+/**
+ * Defines a factory used for creation of instances used by verification in
+ * {@link ComparableVerifier}.
+ *
+ * @param <A> type of the returned instances
+ */
 public interface VerificationInstancesCreator<A> {
+    /**
+     * Returns a List of instances that can be used by the
+     * {@link ComparableVerifier}. Should not return a null List or a List that
+     * contains null values.
+     *
+     * @return list of instances.
+     */
     List<A> create();
 }

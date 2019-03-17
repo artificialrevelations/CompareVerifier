@@ -15,11 +15,24 @@
  */
 package org.foobaz42.comparatorverifier;
 
+/**
+ * The class {@code Math2} contains methods for performing basic numeric
+ * operations such as the elementary exponential, logarithm, square root,
+ * and trigonometric functions.
+ */
 final class Math2 {
     private Math2() {
         throw new IllegalStateException("Math2 should not be instantiated!");
     }
 
+    /**
+     * Returns the sgn (signum) function of the argument; zero if the argument
+     * is zero, 1 if the argument is greater than zero, -1 if the argument is
+     * less than zero.
+     *
+     * @param value int whose sgn is to be returned
+     * @return the sgn (signum) function of the argument
+     */
     static int sgn(final int value) {
         if (0 != value)
             return (value / Math.abs(value));
