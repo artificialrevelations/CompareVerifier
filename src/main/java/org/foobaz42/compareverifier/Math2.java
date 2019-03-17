@@ -13,7 +13,7 @@
   License for the specific language governing permissions and limitations
   under the License.
  */
-package org.foobaz42.comparatorverifier;
+package org.foobaz42.compareverifier;
 
 /**
  * The class {@code Math2} contains methods for performing basic numeric

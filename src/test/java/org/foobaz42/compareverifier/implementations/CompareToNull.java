@@ -1,4 +1,4 @@
-package org.foobaz42.comparatorverifier.implementations;
+package org.foobaz42.compareverifier.implementations;
 
 public class CompareToNull extends Correct {
     public CompareToNull(final int value) {
