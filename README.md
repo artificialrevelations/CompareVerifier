@@ -70,7 +70,7 @@ Add `ComparatorVerifier` to the list of your test dependencies:
 
 ```groovy
 	dependencies {
-	        testImplementation 'com.github.foobaz42:ComparatorVerifier:master-SNAPSHOT'
+	        testImplementation 'com.github.foobaz42:CompareVerifier:master-SNAPSHOT'
 	}
 ```
 
