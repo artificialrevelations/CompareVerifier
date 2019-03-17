@@ -13,7 +13,7 @@
   License for the specific language governing permissions and limitations
   under the License.
  */
-package org.foobaz42.comparatorverifier.implementations;
+package org.foobaz42.compareverifier.implementations;
 
 public class Correct implements Comparable<Correct> {
     public final int value;
