@@ -1,9 +1,9 @@
-package org.foobaz42.comparatorverifier;
+package org.foobaz42.compareverifier;
 
-import org.foobaz42.comparatorverifier.implementations.CompareToNull;
-import org.foobaz42.comparatorverifier.implementations.Correct;
-import org.foobaz42.comparatorverifier.implementations.EqualToNull;
-import org.foobaz42.comparatorverifier.implementations.InconsistentWithEquals;
+import org.foobaz42.compareverifier.implementations.CompareToNull;
+import org.foobaz42.compareverifier.implementations.Correct;
+import org.foobaz42.compareverifier.implementations.EqualToNull;
+import org.foobaz42.compareverifier.implementations.InconsistentWithEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;

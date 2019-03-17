@@ -13,7 +13,7 @@
   License for the specific language governing permissions and limitations
   under the License.
  */
-package org.foobaz42.comparatorverifier.implementations;
+package org.foobaz42.compareverifier.implementations;
 
 // this is using compareTo from base class Correct
 // but has its own equals defined which causes inconsistency

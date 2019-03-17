@@ -4,11 +4,41 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
 
+version = '0.0.1-SNAPSHOT'
+group = 'org.foobaz42.compareverifier'
+
 dependencies {
     testImplementation 'junit:junit:4.12'
 }
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+
+    options {
+        setMemberLevel JavadocMemberLevel.PUBLIC
+        links "https://docs.oracle.com/javase/8/docs/api/"
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
