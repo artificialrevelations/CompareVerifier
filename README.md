@@ -11,6 +11,24 @@ By default verification includes:
 Usage
 --------
 ```java
+    final VerificationInstancesCreator<BigDecimal> lesserCreator =
+            VerificationInstancesCreators.from(
+                new BigDecimal("0.0"), // smaller then the objects returned by
+                new BigDecimal("1.0"), // both equal creator and greater creator
+                new BigDecimal("2.0")
+            );
+    final VerificationInstancesCreator<BigDecimal> equalCreator =
+            VerificationInstancesCreators.from(
+                new BigDecimal("42.0"),
+                new BigDecimal("42.0")
+            );
+    final VerificationInstancesCreator<BigDecimal> greaterCreator =
+            VerificationInstancesCreators.from(
+                new BigDecimal("101.0"), // larger then the objects returned by
+                new BigDecimal("202.0"), // both equal creator and lesser creator
+                new BigDecimal("303.0")
+	    );
+    
     ComparableVerifier.<Foo>forInstances(
         lessInstancesCreator,
         equalInstancesCreator,
