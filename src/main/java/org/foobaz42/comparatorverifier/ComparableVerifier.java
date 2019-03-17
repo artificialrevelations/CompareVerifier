@@ -110,6 +110,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 final int a_b = Math2.sgn(fa.compareTo(sa));
                 final int b_a = -Math2.sgn(sa.compareTo(fa));
                 if (a_b != b_a)
+                    //TODO: revise all the exception messages, add more detail?
                     throw new AssertionError("Instances do not implement a total order!");
             }
         }
