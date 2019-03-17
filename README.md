@@ -53,9 +53,11 @@ It's possible to disable one or more of the default verification checks by using
 Download
 --------
 
-You can use this library in conjunction with JUnit `4.12`. Currently the only available comfortable way to import the library is through the use of [JITPACK.io](https://jitpack.io/):
+You can use this library in conjunction with JUnit `4.12`. There are two ways of getting the library:
+- through [releases](https://github.com/foobaz42/CompareVerifier/releases)
+- through the use of [JITPACK.io](https://jitpack.io/)
 
-In your `build.gradle` file at the end of `repositories` section add this line:
+To configure your project with JITPACK you need to in your `build.gradle` file at the end of `repositories` section add this line:
 
 ```groovy
 	allprojects {
@@ -81,5 +83,4 @@ There are several missing things:
 - transitivity checks
 - other suppress options
 - detailed usage examples
-- github release
 - CI
