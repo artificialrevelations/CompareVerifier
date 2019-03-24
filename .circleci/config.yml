@@ -24,7 +24,7 @@ references:
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1800m"'
 
 jobs:
-  build:
+  assemble:
     <<: *android_config
     steps:
       - checkout
@@ -43,7 +43,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: gradle build
+      - run: gradle assemble
 
       - *persist_debug_workspace
       - store_artifacts:
@@ -109,7 +109,7 @@ workflows:
   version: 2
   workflows:
     jobs:
-      - build
+      - assemble
       - test
       - jacoco_test_reports:
           requires:
