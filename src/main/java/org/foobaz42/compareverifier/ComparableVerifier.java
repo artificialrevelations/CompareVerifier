@@ -92,6 +92,9 @@ import static java.lang.String.format;
  *     .verify();
  * }
  * </pre>
+ * Please be aware that some of the checks done by this class expect that the
+ * instances have a {@link Object#toString()} implementation. This is very
+ * important as it is used for creating assertion messages.
  *
  * @param <A> type of the class under test
  * @see Comparable
@@ -225,7 +228,6 @@ public final class ComparableVerifier<A extends Comparable<A>> {
 
         // TODO: test sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0
     }
-
 
     // sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
     private void verifyTransitivity(final List<A> lesser,
