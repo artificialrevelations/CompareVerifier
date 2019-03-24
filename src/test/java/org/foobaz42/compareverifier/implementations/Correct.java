@@ -47,6 +47,6 @@ public class Correct implements Comparable<Correct> {
 
     @Override
     public String toString() {
-        return "Correct{ value=" + value + '}';
+        return String.format("Correct{ value = %d }", value);
     }
 }
