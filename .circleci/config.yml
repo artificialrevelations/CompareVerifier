@@ -91,7 +91,6 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - *attach_debug_workspace
       - run: gradle dependencies
 
       - save_cache:
@@ -99,6 +98,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      - *attach_debug_workspace
       - run: gradle jacocoTestReport
 
       - store_artifacts:
