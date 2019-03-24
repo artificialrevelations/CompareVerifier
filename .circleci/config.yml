@@ -40,10 +40,10 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.gradle
+            - ~/.gradlew
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: gradle assemble
+      - run: gradlew assemble
 
       - *persist_debug_workspace
       - store_artifacts:
@@ -66,10 +66,10 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.gradle
+            - ~/.gradlew
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: gradle test
+      - run: gradlew test
 
       - *persist_debug_workspace
       - store_artifacts:
@@ -96,10 +96,10 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.gradle
+            - ~/.gradlew
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: gradle jacocoTestReport
+      - run: gradlew jacocoTestReport
 
       - store_artifacts:
           path: build/reports/
