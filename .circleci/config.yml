@@ -1,5 +1,19 @@
 version: 2
 jobs:
+  references:
+    ## Workspace
+    workspace: &workspace
+                 ~/workspace
+    attach_debug_workspace: &attach_debug_workspace
+      attach_workspace:
+        at: *workspace
+    persist_debug_workspace: &persist_debug_workspace
+      persist_to_workspace:
+        root: *workspace
+        paths:
+          - build/libs
+          - build/test-results/
+
   build:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -23,6 +37,11 @@ jobs:
 
       - run: gradle build
 
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: build/libs/
+          destination: /libs/
+
   test:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -45,6 +64,14 @@ jobs:
 
       - run: gradle test
 
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: build/reports/
+          destination: /reports/
+      - store_test_results:
+          path: build/test-results/
+          destination: /test-results/
+
   jacoco_test_reports:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -58,6 +85,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
+      - *attach_debug_workspace
       - run: gradle dependencies
 
       - save_cache:
