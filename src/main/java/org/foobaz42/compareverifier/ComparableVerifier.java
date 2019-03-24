@@ -17,6 +17,8 @@ package org.foobaz42.compareverifier;
 
 import java.util.List;
 
+import static java.lang.String.format;
+
 /**
  * {@code ComparableVerifier} is a tool that can be used in unit tests to verify
  * if certain implementation of the {@link Comparable} interface is correct.
@@ -90,6 +92,9 @@ import java.util.List;
  *     .verify();
  * }
  * </pre>
+ * Please be aware that some of the checks done by this class expect that the
+ * instances have a {@link Object#toString()} implementation. This is very
+ * important as it is used for creating assertion messages.
  *
  * @param <A> type of the class under test
  * @see Comparable
@@ -188,7 +193,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         verifyInstancesCreatorIsNotNull(greaterCreator, "greater");
 
         // verify that the instances List is not null (obvious check)
-        final List<A> lessInstances =
+        final List<A> lesserInstances =
                 verifyInstancesIsNotNull(lesserCreator, "lesser");
         final List<A> equalInstances =
                 verifyInstancesIsNotNull(equalCreator, "equal");
@@ -202,32 +207,59 @@ public final class ComparableVerifier<A extends Comparable<A>> {
 
         // verify that the returned instances return false when checked for equality
         // with null
-        verifyEqualsToNullReturnsFalse(lessInstances);
+        verifyEqualsToNullReturnsFalse(lesserInstances);
         verifyEqualsToNullReturnsFalse(equalInstances);
         verifyEqualsToNullReturnsFalse(greaterInstances);
 
         // verify that the returned instances throw an exception when compared
         // to null
-        verifyExceptionOnCompareToNull(lessInstances);
+        verifyExceptionOnCompareToNull(lesserInstances);
         verifyExceptionOnCompareToNull(equalInstances);
         verifyExceptionOnCompareToNull(greaterInstances);
 
         // verify that sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
         verifyReverse(equalInstances, equalInstances);
-        verifyReverse(equalInstances, lessInstances);
+        verifyReverse(equalInstances, lesserInstances);
         verifyReverse(equalInstances, greaterInstances);
-        verifyReverse(lessInstances, greaterInstances);
+        verifyReverse(lesserInstances, greaterInstances);
 
-        // TODO: testing transitivity:
-        // TODO: test sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
+        // verify that sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
+        verifyTransitivity(lesserInstances, equalInstances, greaterInstances);
+
         // TODO: test sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0
+    }
+
+    // sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
+    private void verifyTransitivity(final List<A> lesser,
+                                    final List<A> equal,
+                                    final List<A> greater) {
+        for (final A la : lesser) {
+            for (final A ea : equal) {
+                for (final A ga : greater) {
+                    final int equal_lesser = Math2.sgn(ea.compareTo(la));
+                    final int greater_equal = Math2.sgn(ga.compareTo(ea));
+                    final int greater_lesser = Math2.sgn(ga.compareTo(la));
+
+                    final boolean isTransitive =
+                            equal_lesser > 0
+                                    && greater_equal > 0
+                                    && greater_lesser > 0;
+
+                    if (!isTransitive) {
+                        throw new AssertionError(
+                                format("Instances %s, %s, %s, are not transitive!", la, ea, ga)
+                        );
+                    }
+                }
+            }
+        }
     }
 
     // sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
     // TODO: a.compareTo(b) should throw exception iff b.compareTo(a) throws
     private void verifyReverse(final List<A> first,
                                final List<A> second) {
-        for (A fa : first) {
+        for (final A fa : first) {
             for (final A sa : second) {
                 final int a_b = Math2.sgn(fa.compareTo(sa));
                 final int b_a = -Math2.sgn(sa.compareTo(fa));
