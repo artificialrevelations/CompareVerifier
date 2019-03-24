@@ -83,6 +83,7 @@ jobs:
     <<: *android_config
     steps:
       - checkout
+      - run: gradle dependencies
       - *attach_debug_workspace
       - run: ./gradlew -PciBuild=true jacocoTestReport
       - store_artifacts:
