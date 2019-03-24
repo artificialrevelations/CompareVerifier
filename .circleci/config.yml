@@ -1,5 +1,17 @@
 version: 2
 references:
+  ## Cache
+  cache_key: &cache_key
+    key: cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle" }}
+  restore_cache: &restore_cache
+    restore_cache:
+      <<: *cache_key
+  save_cache: &save_cache
+    save_cache:
+      <<: *cache_key
+      paths:
+        - ~/.gradle
+
   ## Workspace
   workspace: &workspace
     ~/workspace
@@ -14,7 +26,7 @@ references:
         - build/test-results/
 
   ## Docker images
-  config: &android_config
+  config: &config
     working_directory: *workspace
     docker:
       - image: circleci/openjdk:8-jdk
@@ -23,54 +35,30 @@ references:
       _JAVA_OPTIONS: "-Xmx1800m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1800m"'
 
+
+
 jobs:
   assemble:
-    <<: *android_config
+    <<: *config
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+      - *restore_cache
       - run: gradle dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradlew
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
+      - *save_cache
       - run: ./gradlew assemble
-
       - *persist_debug_workspace
       - store_artifacts:
           path: build/libs/
           destination: /libs/
 
   test:
-    <<: *android_config
+    <<: *config
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+      - *restore_cache
       - run: gradle dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradlew
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
-      - run: ./gradlew -PciBuild=true test
-
+      - *save_cache
+      - run: ./gradlew test
       - *persist_debug_workspace
       - store_artifacts:
           path: build/reports/
