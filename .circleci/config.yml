@@ -23,8 +23,56 @@ jobs:
 
       - run: gradle build
 
+  test:
+    docker:
+      - image: circleci/<language>:<version TAG>
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: gradle dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: gradle test
+
+  jacoco_test_reports:
+    docker:
+      - image: circleci/<language>:<version TAG>
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: gradle dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: gradle jacocoTestReport
+
 workflows:
   version: 2
-  build_library:
-    jobs:
-      - build
+  jobs:
+    - build
+    - test
+    - jacoco_test_reports:
+        requires:
+          - build
+          - test
