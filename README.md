@@ -79,8 +79,4 @@ Add `ComparatorVerifier` to the list of your test dependencies:
 TODO
 ----
 
-There are several missing things:
-- transitivity checks
-- other suppress options
 - detailed usage examples
-- CI
