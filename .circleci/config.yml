@@ -67,6 +67,10 @@ jobs:
 
       - run: gradle jacocoTestReport
 
+      - store_artifacts:
+          path: build/reports/
+          destination: /reports/
+
 workflows:
   version: 2
   workflows:
