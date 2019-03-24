@@ -1,0 +1,75 @@
+version: 2
+references:
+  ## Cache
+  cache_key: &cache_key
+    key: cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle" }}
+  restore_cache: &restore_cache
+    restore_cache:
+      <<: *cache_key
+  save_cache: &save_cache
+    save_cache:
+      <<: *cache_key
+      paths:
+        - ~/.gradle
+
+  ## Workspace
+  workspace: &workspace
+    ~/workspace
+  attach_debug_workspace: &attach_debug_workspace
+    attach_workspace:
+      at: *workspace
+  persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - build/libs
+        - build/test-results/
+
+  ## Docker images
+  config: &config
+    working_directory: *workspace
+    docker:
+      - image: circleci/openjdk:8-jdk
+    environment:
+      TERM: dumb
+      _JAVA_OPTIONS: "-Xmx1800m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1800m"'
+
+
+
+jobs:
+  assemble:
+    <<: *config
+    steps:
+      - checkout
+      - *restore_cache
+      - run: gradle dependencies
+      - *save_cache
+      - run: ./gradlew assemble
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: build/libs/
+          destination: /libs/
+
+  test:
+    <<: *config
+    steps:
+      - checkout
+      - *restore_cache
+      - run: gradle dependencies
+      - *save_cache
+      - run: ./gradlew test
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: build/reports/
+          destination: /reports/
+      - store_test_results:
+          path: build/test-results/
+          destination: /test-results/
+
+workflows:
+  version: 2
+  workflows:
+    jobs:
+      - assemble
+      - test

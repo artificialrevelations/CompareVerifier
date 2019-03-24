@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'jacoco'
 }
 
 repositories {
@@ -42,3 +43,10 @@ artifacts {
     archives javadocJar
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+test.finalizedBy jacocoTestReport
