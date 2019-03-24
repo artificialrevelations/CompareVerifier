@@ -69,7 +69,7 @@ jobs:
             - ~/.gradlew
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: ./gradlew test
+      - run: ./gradlew -PciBuild=true test
 
       - *persist_debug_workspace
       - store_artifacts:
@@ -99,7 +99,7 @@ jobs:
             - ~/.gradlew
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: ./gradlew jacocoTestReport
+      - run: ./gradlew -PciBuild=true jacocoTestReport
 
       - store_artifacts:
           path: build/reports/
