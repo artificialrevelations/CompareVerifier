@@ -4,9 +4,11 @@ import org.foobaz42.compareverifier.implementations.CompareToNull;
 import org.foobaz42.compareverifier.implementations.Correct;
 import org.foobaz42.compareverifier.implementations.EqualToNull;
 import org.foobaz42.compareverifier.implementations.InconsistentWithEquals;
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
@@ -544,6 +546,9 @@ public class ComparableVerifierTest {
     }
 
     public static class Verify {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
         @Test
         public void should_pass_for_all_instances() {
             // given:
@@ -566,6 +571,35 @@ public class ComparableVerifierTest {
                             new Correct(101),
                             new Correct(102)
                     );
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_fail_for_incorrectly_specified_instances() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new Correct(0),
+                            new Correct(43)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42),
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(1),
+                            new Correct(101),
+                            new Correct(102)
+                    );
+
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage(CoreMatchers.containsString("are not transitive!"));
 
             // when:
             ComparableVerifier

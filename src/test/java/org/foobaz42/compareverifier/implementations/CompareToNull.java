@@ -13,4 +13,9 @@ public class CompareToNull extends Correct {
 
         return super.compareTo(other);
     }
+
+    @Override
+    public String toString() {
+        return String.format("CompareToNull{ value = %d }", value);
+    }
 }

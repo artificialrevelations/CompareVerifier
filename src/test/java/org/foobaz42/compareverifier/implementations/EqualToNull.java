@@ -12,4 +12,9 @@ public class EqualToNull extends Correct {
 
         return super.equals(other);
     }
+
+    @Override
+    public String toString() {
+        return String.format("EqualToNull{ value = %d }", value);
+    }
 }
