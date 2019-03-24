@@ -22,3 +22,9 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - run: gradle build
+
+workflows:
+  version: 2
+  build_library:
+    jobs:
+      -build
