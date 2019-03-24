@@ -13,11 +13,19 @@ references:
         - build/libs
         - build/test-results/
 
-jobs:
-  build:
+  ## Docker images
+  config: &android_config
+    working_directory: *workspace
     docker:
       - image: circleci/openjdk:8-jdk
+    environment:
+      TERM: dumb
+      _JAVA_OPTIONS: "-Xmx1800m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1800m"'
 
+jobs:
+  build:
+    <<: *android_config
     steps:
       - checkout
 
@@ -43,8 +51,7 @@ jobs:
           destination: /libs/
 
   test:
-    docker:
-      - image: circleci/openjdk:8-jdk
+    <<: *android_config
     steps:
       - checkout
 
@@ -73,8 +80,7 @@ jobs:
           destination: /test-results/
 
   jacoco_test_reports:
-    docker:
-      - image: circleci/openjdk:8-jdk
+    <<: *android_config
     steps:
       - checkout
 
