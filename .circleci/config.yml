@@ -1,19 +1,20 @@
 version: 2
-jobs:
-  references:
-    ## Workspace
-    workspace: &workspace
-                 ~/workspace
-    attach_debug_workspace: &attach_debug_workspace
-      attach_workspace:
-        at: *workspace
-    persist_debug_workspace: &persist_debug_workspace
-      persist_to_workspace:
-        root: *workspace
-        paths:
-          - build/libs
-          - build/test-results/
 
+references:
+  ## Workspace
+  workspace: &workspace
+               ~/workspace
+  attach_debug_workspace: &attach_debug_workspace
+    attach_workspace:
+      at: *workspace
+  persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - build/libs
+        - build/test-results/
+
+jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
