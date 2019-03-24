@@ -83,24 +83,8 @@ jobs:
     <<: *android_config
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
       - *attach_debug_workspace
-      - run: gradle dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradlew
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
       - run: ./gradlew -PciBuild=true jacocoTestReport
-
       - store_artifacts:
           path: build/reports/
           destination: /reports/
