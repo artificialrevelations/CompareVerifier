@@ -113,5 +113,5 @@ workflows:
       - test
       - jacoco_test_reports:
           requires:
-            - build
+            - assemble
             - test
