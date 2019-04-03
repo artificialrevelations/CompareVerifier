@@ -13,7 +13,7 @@
   License for the specific language governing permissions and limitations
   under the License.
  */
-package org.foobaz42.compareverifier;
+package org.artrev.compareverifier;
 
 import java.util.Arrays;
 import java.util.Collections;

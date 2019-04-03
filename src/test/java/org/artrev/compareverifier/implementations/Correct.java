@@ -13,17 +13,13 @@
   License for the specific language governing permissions and limitations
   under the License.
  */
-package org.foobaz42.compareverifier.implementations;
+package org.artrev.compareverifier.implementations;
 
-// this is using compareTo from base class Correct
-// but has its own equals defined which causes inconsistency
-public class InconsistentWithEquals extends Correct {
-    public final int another;
+public class Correct implements Comparable<Correct> {
+    public final int value;
 
-    public InconsistentWithEquals(final int value,
-                                  final int another) {
-        super(value);
-        this.another = another;
+    public Correct(final int value) {
+        this.value = value;
     }
 
     @Override
@@ -31,26 +27,26 @@ public class InconsistentWithEquals extends Correct {
         if (this == other)
             return true;
 
-        if (other == null || getClass() != other.getClass())
+        if (null == other || getClass() != other.getClass())
             return false;
 
-        if (!super.equals(other))
-            return false;
+        final Correct that = (Correct) other;
 
-        final InconsistentWithEquals that = (InconsistentWithEquals) other;
-
-        return another == that.another;
+        return value == that.value;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + another;
-        return result;
+        return value;
+    }
+
+    @Override
+    public int compareTo(final Correct other) {
+        return value - other.value;
     }
 
     @Override
     public String toString() {
-        return "InconsistentWithEquals{ another=" + another + ", value=" + value + '}';
+        return String.format("Correct{ value = %d }", value);
     }
 }
