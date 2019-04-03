@@ -1,3 +1,6 @@
+[![Build Status](https://circleci.com/gh/artificialrevelations/CompareVerifier.svg?branch=master&style=shield&circle-token=84c8476e29d87402fdf0d0a731e7eaf09555e8b2)](https://circleci.com/gh/artificialrevelations/CompareVerifier)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://circleci.com/gh/artificialrevelations/CompareVerifier/blob/master/LICENSE)
+
 # CompareVerifier
 CompareVerifier is a pure Java library that can be used in Junit tests to verify that classes implementing `Comparable` interfaces are defined correctly.
 
