@@ -1,14 +1,13 @@
-package org.foobaz42.compareverifier;
+package org.artrev.compareverifier;
 
-import org.foobaz42.compareverifier.implementations.CompareToNull;
-import org.foobaz42.compareverifier.implementations.Correct;
-import org.foobaz42.compareverifier.implementations.EqualToNull;
-import org.foobaz42.compareverifier.implementations.InconsistentWithEquals;
+import org.artrev.compareverifier.implementations.CompareToNull;
+import org.artrev.compareverifier.implementations.Correct;
+import org.artrev.compareverifier.implementations.EqualToNull;
+import org.artrev.compareverifier.implementations.InconsistentWithEquals;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
