@@ -54,7 +54,7 @@ Download
 --------
 
 You can use this library in conjunction with JUnit `4.12`. There are two ways of getting the library:
-- through [releases](https://github.com/foobaz42/CompareVerifier/releases)
+- through [releases](https://github.com/artificialrevelations/CompareVerifier/releases)
 - through the use of [JITPACK.io](https://jitpack.io/)
 
 To configure your project with JITPACK you need to in your `build.gradle` file at the end of `repositories` section add this line:
@@ -72,7 +72,7 @@ Add `ComparatorVerifier` to the list of your test dependencies:
 
 ```groovy
 	dependencies {
-	        testImplementation 'com.github.foobaz42:CompareVerifier:master-SNAPSHOT'
+	        testImplementation 'com.github.artificialrevelations:CompareVerifier:master-SNAPSHOT'
 	}
 ```
 
