@@ -11,8 +11,8 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
 
-version = '0.0.1-SNAPSHOT'
-group = 'org.foobaz42.compareverifier'
+version = '0.0.2-SNAPSHOT'
+group = 'org.artrev.compareverifier'
 
 dependencies {
     testImplementation 'junit:junit:4.12'
