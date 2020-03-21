@@ -260,7 +260,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 int signOfAtoB = Integer.MIN_VALUE;
                 boolean exceptionOnAtoBCompare = false;
                 try {
-                    signOfAtoB = Math2.sgn(a.compareTo(b));
+                    signOfAtoB = (int) Math.signum(a.compareTo(b));
                 } catch (final Exception exc) {
                     exceptionOnAtoBCompare = true;
                 }
@@ -269,7 +269,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 int signOfBtoA = Integer.MAX_VALUE;
                 boolean exceptionOnBtoACompare = false;
                 try {
-                    signOfBtoA = Math2.sgn(b.compareTo(a));
+                    signOfBtoA = (int) Math.signum(b.compareTo(a));
                 } catch (final Exception exc) {
                     exceptionOnBtoACompare = true;
                 }
