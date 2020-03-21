@@ -1,9 +1,21 @@
+/*
+  Copyright (c) 2020-present, CompareVerifier Contributors.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy
+  of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations
+  under the License.
+ */
 package org.artrev.compareverifier;
 
-import org.artrev.compareverifier.implementations.CompareToNull;
-import org.artrev.compareverifier.implementations.Correct;
-import org.artrev.compareverifier.implementations.EqualToNull;
-import org.artrev.compareverifier.implementations.InconsistentWithEquals;
+import org.artrev.compareverifier.implementations.*;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -146,6 +158,120 @@ public class ComparableVerifierTest {
 
             expectedException.expect(IllegalArgumentException.class);
             expectedException.expectMessage("VerificationInstancesCreator (greater) cannot return null instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Lesser_instances_list_is_Empty() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.emptyInstances();
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(new Correct(42));
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(new Correct(303));
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot return empty list of instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Equal_instances_list_is_Empty() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(new Correct(0));
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.emptyInstances();
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(new Correct(303));
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (equal) cannot return empty list of instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Greater_instances_list_is_Empty() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(new Correct(0));
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(new Correct(42));
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.emptyInstances();
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (greater) cannot return empty list of instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Lesser_instances_contain_Null() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.nullValue();
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(new Correct(42));
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(new Correct(303));
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (lesser) cannot contain null instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Equal_instances_contain_Null() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(new Correct(0));
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.nullValue();
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(new Correct(303));
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (equal) cannot contain null instances!");
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_throw_If_created_Greater_instances_contain_Null() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(new Correct(0));
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(new Correct(42));
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.nullValue();
+
+            expectedException.expect(IllegalArgumentException.class);
+            expectedException.expectMessage("VerificationInstancesCreator (greater) cannot contain null instances!");
 
             // when:
             ComparableVerifier
@@ -599,6 +725,31 @@ public class ComparableVerifierTest {
 
             expectedException.expect(AssertionError.class);
             expectedException.expectMessage(CoreMatchers.containsString("are not transitive!"));
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_fail_when_Equal_instances_do_not_throw_exceptions_symmetrically() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new CompareToThrows(0)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(100)
+                    );
+
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("Comparing CompareToThrows{ value = 0 } to Correct{ value = 42 } threw an exception but Correct{ value = 42 } to CompareToThrows{ value = 0 } did not!");
 
             // when:
             ComparableVerifier

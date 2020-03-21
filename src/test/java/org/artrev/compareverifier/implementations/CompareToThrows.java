@@ -15,22 +15,24 @@
  */
 package org.artrev.compareverifier.implementations;
 
-public class CompareToNull extends Correct {
-    public CompareToNull(final int value) {
+public class CompareToThrows extends Correct {
+    public CompareToThrows(final int value) {
         super(value);
     }
 
     @Override
     public int compareTo(final Correct other) {
-        // this simulates an issue where compareTo(null) won't throw an exception
-        if (null == other)
-            return 0;
-
-        return super.compareTo(other);
+        throw new CompareToException("A possible exception that might happen in compareTo!");
     }
 
     @Override
     public String toString() {
-        return String.format("CompareToNull{ value = %d }", value);
+        return String.format("CompareToThrows{ value = %d }", value);
+    }
+
+    public static class CompareToException extends RuntimeException {
+        public CompareToException(final String message) {
+            super(message);
+        }
     }
 }
