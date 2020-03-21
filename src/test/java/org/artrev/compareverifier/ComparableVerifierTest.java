@@ -15,10 +15,7 @@
  */
 package org.artrev.compareverifier;
 
-import org.artrev.compareverifier.implementations.CompareToNull;
-import org.artrev.compareverifier.implementations.Correct;
-import org.artrev.compareverifier.implementations.EqualToNull;
-import org.artrev.compareverifier.implementations.InconsistentWithEquals;
+import org.artrev.compareverifier.implementations.*;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -728,6 +725,31 @@ public class ComparableVerifierTest {
 
             expectedException.expect(AssertionError.class);
             expectedException.expectMessage(CoreMatchers.containsString("are not transitive!"));
+
+            // when:
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+        }
+
+        @Test
+        public void should_fail_when_Equal_instances_do_not_throw_exceptions_symmetrically() {
+            // given:
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new CompareToThrows(0)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(100)
+                    );
+
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("Comparing CompareToThrows{ value = 0 } to Correct{ value = 42 } threw an exception but Correct{ value = 42 } to CompareToThrows{ value = 0 } did not!");
 
             // when:
             ComparableVerifier

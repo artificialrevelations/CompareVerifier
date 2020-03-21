@@ -15,6 +15,24 @@
  */
 package org.artrev.compareverifier.implementations;
 
-public class CompareToThrows {
+public class CompareToThrows extends Correct {
+    public CompareToThrows(final int value) {
+        super(value);
+    }
 
+    @Override
+    public int compareTo(final Correct other) {
+        throw new CompareToException("A possible exception that might happen in compareTo!");
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CompareToThrows{ value = %d }", value);
+    }
+
+    public static class CompareToException extends RuntimeException {
+        public CompareToException(final String message) {
+            super(message);
+        }
+    }
 }
