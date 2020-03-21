@@ -15,22 +15,6 @@
  */
 package org.artrev.compareverifier.implementations;
 
-public class CompareToNull extends Correct {
-    public CompareToNull(final int value) {
-        super(value);
-    }
+public class CompareToThrows {
 
-    @Override
-    public int compareTo(final Correct other) {
-        // this simulates an issue where compareTo(null) won't throw an exception
-        if (null == other)
-            return 0;
-
-        return super.compareTo(other);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("CompareToNull{ value = %d }", value);
-    }
 }
