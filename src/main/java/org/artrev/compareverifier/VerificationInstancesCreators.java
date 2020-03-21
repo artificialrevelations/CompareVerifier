@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2019-present, ComparatorVerifier Contributors.
+  Copyright (c) 2020-present, CompareVerifier Contributors.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not
   use this file except in compliance with the License. You may obtain a copy
@@ -80,7 +80,7 @@ public final class VerificationInstancesCreators {
      * @param <A> type of the instances returned by the Creator.
      * @return instance of {@link VerificationInstancesCreator}
      */
-    public static <A> VerificationInstancesCreator<A> nullValues() {
+    public static <A> VerificationInstancesCreator<A> nullValue() {
         return new VerificationInstancesCreator<A>() {
             @Override
             public List<A> create() {
@@ -102,6 +102,23 @@ public final class VerificationInstancesCreators {
             @Override
             public List<A> create() {
                 return null;
+            }
+        };
+    }
+
+    /**
+     * Creates a {@link VerificationInstancesCreator} that will return an empty
+     * List. This method is mainly handy for testing of the
+     * {@link ComparableVerifier} implementation.
+     *
+     * @param <A> type of the instances returned by the Creator.
+     * @return instance of {@link VerificationInstancesCreator}
+     */
+    public static <A> VerificationInstancesCreator<A> emptyInstances() {
+        return new VerificationInstancesCreator<A>() {
+            @Override
+            public List<A> create() {
+                return Collections.emptyList();
             }
         };
     }

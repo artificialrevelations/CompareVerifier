@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2019-present, ComparatorVerifier Contributors.
+  Copyright (c) 2020-present, CompareVerifier Contributors.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not
   use this file except in compliance with the License. You may obtain a copy
@@ -188,31 +188,26 @@ public final class ComparableVerifier<A extends Comparable<A>> {
      */
     public void verify() {
         // verify that the instances creators are not null (obvious check)
-        verifyInstancesCreatorIsNotNull(lesserCreator, "lesser");
-        verifyInstancesCreatorIsNotNull(equalCreator, "equal");
-        verifyInstancesCreatorIsNotNull(greaterCreator, "greater");
-
         // verify that the instances List is not null (obvious check)
+        // verify that the instances List has at least one element (obvious check)
         final List<A> lesserInstances =
-                verifyInstancesIsNotNull(lesserCreator, "lesser");
+                verifyInstancesCreator(lesserCreator, "lesser");
         final List<A> equalInstances =
-                verifyInstancesIsNotNull(equalCreator, "equal");
+                verifyInstancesCreator(equalCreator, "equal");
         final List<A> greaterInstances =
-                verifyInstancesIsNotNull(greaterCreator, "greater");
+                verifyInstancesCreator(greaterCreator, "greater");
 
         // verify that the returned instances are consistent with equals
         // we only check the instances created by the Equal instances creator
         // as they are supposed to be the same in terms of equals implementation
         verifyCompareToConsistentWithEquals(equalInstances);
 
-        // verify that the returned instances return false when checked for equality
-        // with null
+        // verify that the returned instances return false when checked for equality with null
         verifyEqualsToNullReturnsFalse(lesserInstances);
         verifyEqualsToNullReturnsFalse(equalInstances);
         verifyEqualsToNullReturnsFalse(greaterInstances);
 
-        // verify that the returned instances throw an exception when compared
-        // to null
+        // verify that the returned instances throw an exception when compared to null
         verifyExceptionOnCompareToNull(lesserInstances);
         verifyExceptionOnCompareToNull(equalInstances);
         verifyExceptionOnCompareToNull(greaterInstances);
@@ -256,16 +251,41 @@ public final class ComparableVerifier<A extends Comparable<A>> {
     }
 
     // sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
-    // TODO: a.compareTo(b) should throw exception iff b.compareTo(a) throws
+    // a.compareTo(b) should throw exception iff b.compareTo(a) throws
     private void verifyReverse(final List<A> first,
                                final List<A> second) {
-        for (final A fa : first) {
-            for (final A sa : second) {
-                final int a_b = (int) Math.signum(fa.compareTo(sa));
-                final int b_a = -(int) Math.signum(sa.compareTo(fa));
-                if (a_b != b_a)
-                    //TODO: revise all the exception messages, add more detail?
-                    throw new AssertionError("Instances do not implement a total order!");
+        for (final A a : first) {
+            for (final A b : second) {
+                // getting info for sgn(a.compareTo(b)) part
+                int signOfAtoB = Integer.MIN_VALUE;
+                boolean exceptionOnAtoBCompare = false;
+                try {
+                    signOfAtoB = Math2.sgn(a.compareTo(b));
+                } catch (final Exception exc) {
+                    exceptionOnAtoBCompare = true;
+                }
+
+                // getting info for sgn(b.compareTo(a)) part
+                int signOfBtoA = Integer.MAX_VALUE;
+                boolean exceptionOnBtoACompare = false;
+                try {
+                    signOfBtoA = Math2.sgn(b.compareTo(a));
+                } catch (final Exception exc) {
+                    exceptionOnBtoACompare = true;
+                }
+
+                // if the a.compareTo(b) threw an exception but b.compareTo(a) did not
+                if (exceptionOnAtoBCompare && !exceptionOnBtoACompare) {
+                    throw new AssertionError("Comparing A to B threw an exception but B to A did not!");
+                }
+                // if the b.compareTo(a) threw an exception but a.compareTo(b) did not
+                if (!exceptionOnAtoBCompare && exceptionOnBtoACompare) {
+                    throw new AssertionError("Comparing B to A threw an exception but A to B did not!");
+                }
+                // if sgn(a.compareTo(b)) != -sgn(b.compareTo(a))
+                if (signOfAtoB != -signOfBtoA) {
+                        throw new AssertionError("Instances do not implement a total order!");
+                }
             }
         }
     }
@@ -315,17 +335,23 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         }
     }
 
-    private static <A> void verifyInstancesCreatorIsNotNull(final VerificationInstancesCreator<A> creator,
-                                                            final String type) {
+    private static <A> List<A> verifyInstancesCreator(final VerificationInstancesCreator<A> creator,
+                                                      final String type) {
         if (null == creator)
             throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot be null!");
-    }
 
-    private static <A> List<A> verifyInstancesIsNotNull(final VerificationInstancesCreator<A> creator,
-                                                        final String type) {
         final List<A> instances = creator.create();
         if (null == instances)
             throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot return null instances!");
+
+        if (instances.isEmpty())
+            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot return empty list of instances!");
+
+        for (final A instance : instances) {
+            if (null == instance)
+                throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot contain null instances!");
+        }
+
         return instances;
     }
 }
