@@ -236,9 +236,9 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         for (final A la : lesser) {
             for (final A ea : equal) {
                 for (final A ga : greater) {
-                    final int equal_lesser = Math2.sgn(ea.compareTo(la));
-                    final int greater_equal = Math2.sgn(ga.compareTo(ea));
-                    final int greater_lesser = Math2.sgn(ga.compareTo(la));
+                    final int equal_lesser = (int) Math.signum(ea.compareTo(la));
+                    final int greater_equal = (int) Math.signum(ga.compareTo(ea));
+                    final int greater_lesser = (int) Math.signum(ga.compareTo(la));
 
                     final boolean isTransitive =
                             equal_lesser > 0
@@ -261,8 +261,8 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                                final List<A> second) {
         for (final A fa : first) {
             for (final A sa : second) {
-                final int a_b = Math2.sgn(fa.compareTo(sa));
-                final int b_a = -Math2.sgn(sa.compareTo(fa));
+                final int a_b = (int) Math.signum(fa.compareTo(sa));
+                final int b_a = -(int) Math.signum(sa.compareTo(fa));
                 if (a_b != b_a)
                     //TODO: revise all the exception messages, add more detail?
                     throw new AssertionError("Instances do not implement a total order!");
