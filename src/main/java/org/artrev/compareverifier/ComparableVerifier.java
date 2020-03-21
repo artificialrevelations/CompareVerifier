@@ -276,11 +276,15 @@ public final class ComparableVerifier<A extends Comparable<A>> {
 
                 // if the a.compareTo(b) threw an exception but b.compareTo(a) did not
                 if (exceptionOnAtoBCompare && !exceptionOnBtoACompare) {
-                    throw new AssertionError("Comparing A to B threw an exception but B to A did not!");
+                    throw new AssertionError(
+                            format("Comparing %s to %s threw an exception but %s to %s did not!", a, b, b, a)
+                    );
                 }
                 // if the b.compareTo(a) threw an exception but a.compareTo(b) did not
                 if (!exceptionOnAtoBCompare && exceptionOnBtoACompare) {
-                    throw new AssertionError("Comparing B to A threw an exception but A to B did not!");
+                    throw new AssertionError(
+                            format("Comparing %s to %s threw an exception but %s to %s did not!", b, a, a, b)
+                    );
                 }
                 // if sgn(a.compareTo(b)) != -sgn(b.compareTo(a))
                 if (signOfAtoB != -signOfBtoA) {
