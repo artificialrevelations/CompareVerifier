@@ -326,7 +326,7 @@ public class ComparableVerifierTest {
                     );
 
             expectedException.expect(AssertionError.class);
-            expectedException.expectMessage("CompareTo is not consistent with equals!");
+            expectedException.expectMessage("Comparing is not consistent with equals!");
 
             // when:
             ComparableVerifier
@@ -356,7 +356,7 @@ public class ComparableVerifierTest {
                     );
 
             expectedException.expect(AssertionError.class);
-            expectedException.expectMessage("CompareTo is not consistent with equals!");
+            expectedException.expectMessage("Comparing is not consistent with equals!");
 
             // when:
             ComparableVerifier
@@ -608,7 +608,7 @@ public class ComparableVerifierTest {
                     );
 
             expectedException.expect(AssertionError.class);
-            expectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expectMessage("Comparing to null should throw an exception!");
 
             // when:
             ComparableVerifier
@@ -634,7 +634,7 @@ public class ComparableVerifierTest {
                     );
 
             expectedException.expect(AssertionError.class);
-            expectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expectMessage("Comparing to null should throw an exception!");
 
             // when:
             ComparableVerifier
@@ -660,7 +660,7 @@ public class ComparableVerifierTest {
                     );
 
             expectedException.expect(AssertionError.class);
-            expectedException.expectMessage("CompareTo null should throw an exception!");
+            expectedException.expectMessage("Comparing to null should throw an exception!");
 
             // when:
             ComparableVerifier
