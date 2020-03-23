@@ -3,9 +3,9 @@ package org.artrev.compareverifier;
 /**
  * @param <A>
  */
-class CompareToStrategy<A extends Comparable<A>> implements CompareStrategy<A> {
+class ComparableStrategy<A extends Comparable<A>> implements CompareStrategy<A> {
 
-    CompareToStrategy() {
+    ComparableStrategy() {
     }
 
     @Override

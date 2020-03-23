@@ -105,7 +105,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                                final VerificationInstancesCreator<A> equalCreator,
                                final VerificationInstancesCreator<A> greaterCreator) {
         verifier = new ConfigurableVerifier<A>(
-                new CompareToStrategy<A>(),
+                new ComparableStrategy<A>(),
                 lesserCreator,
                 equalCreator,
                 greaterCreator
