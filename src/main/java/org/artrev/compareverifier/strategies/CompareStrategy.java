@@ -11,5 +11,5 @@ public interface CompareStrategy<A> {
      * @param second
      * @return
      */
-    int compareTo(A first, A second);
+    int compare(A first, A second);
 }

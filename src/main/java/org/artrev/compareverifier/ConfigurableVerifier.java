@@ -12,7 +12,7 @@ final class ConfigurableVerifier<A> {
     private final VerificationInstancesProvider<A> lesserCreator;
     private final VerificationInstancesProvider<A> greaterCreator;
     private final VerificationInstancesProvider<A> equalCreator;
-    private final CompareStrategy<A> compareStrategy;
+    private final CompareStrategy<A> strategy;
 
     private boolean suppressConsistentWithEquals = false;
     private boolean suppressEqualsToNullReturnsFalse = false;
@@ -25,7 +25,7 @@ final class ConfigurableVerifier<A> {
         this.lesserCreator = lesserCreator;
         this.greaterCreator = greaterCreator;
         this.equalCreator = equalCreator;
-        this.compareStrategy = compareStrategy;
+        this.strategy = compareStrategy;
     }
 
     protected void suppressConsistentWithEquals(final boolean suppressCheck) {
@@ -57,7 +57,9 @@ final class ConfigurableVerifier<A> {
         verifications.add(new InstancesAreNotNullVerification<A>());
         verifications.add(new InstancesSizeVerification<A>());
         if (!suppressConsistentWithEquals)
-            verifications.add(new ConsistencyWithEqualsVerification<A>(compareStrategy));
+            verifications.add(new ConsistencyWithEqualsVerification<A>(strategy));
+        if (!suppressEqualsToNullReturnsFalse)
+            verifications.add(new EqualityWithNullVerification<A>());
 
         for (final Verification<A> verification : verifications) {
             verification.verify(
@@ -67,15 +69,10 @@ final class ConfigurableVerifier<A> {
             );
         }
 
-        // verify that the returned instances return false when checked for equality with null
-        verifyEqualsToNullReturnsFalse(lesserInstances);
-        verifyEqualsToNullReturnsFalse(equalInstances);
-        verifyEqualsToNullReturnsFalse(greaterInstances);
-
         // verify that the returned instances throw an exception when compared to null
-        verifyExceptionOnCompareToNull(lesserInstances);
-        verifyExceptionOnCompareToNull(equalInstances);
-        verifyExceptionOnCompareToNull(greaterInstances);
+        verifyExceptionOnComparingWithNull(lesserInstances);
+        verifyExceptionOnComparingWithNull(equalInstances);
+        verifyExceptionOnComparingWithNull(greaterInstances);
 
         // verify that sgn(a.compareTo(b)) == -sgn(b.compareTo(a))
         verifyReverse(equalInstances, equalInstances);
@@ -96,9 +93,9 @@ final class ConfigurableVerifier<A> {
         for (final A la : lesser) {
             for (final A ea : equal) {
                 for (final A ga : greater) {
-                    final int equal_lesser = (int) Math.signum(compareStrategy.compareTo(ea, la));
-                    final int greater_equal = (int) Math.signum(compareStrategy.compareTo(ga, ea));
-                    final int greater_lesser = (int) Math.signum(compareStrategy.compareTo(ga, la));
+                    final int equal_lesser = (int) Math.signum(strategy.compare(ea, la));
+                    final int greater_equal = (int) Math.signum(strategy.compare(ga, ea));
+                    final int greater_lesser = (int) Math.signum(strategy.compare(ga, la));
 
                     final boolean isTransitive =
                             equal_lesser > 0
@@ -125,7 +122,7 @@ final class ConfigurableVerifier<A> {
                 int signOfAtoB = Integer.MIN_VALUE;
                 boolean exceptionOnAtoBCompare = false;
                 try {
-                    signOfAtoB = (int) Math.signum(compareStrategy.compareTo(a, b));
+                    signOfAtoB = (int) Math.signum(strategy.compare(a, b));
                 } catch (final Exception exc) {
                     exceptionOnAtoBCompare = true;
                 }
@@ -134,7 +131,7 @@ final class ConfigurableVerifier<A> {
                 int signOfBtoA = Integer.MAX_VALUE;
                 boolean exceptionOnBtoACompare = false;
                 try {
-                    signOfBtoA = (int) Math.signum(compareStrategy.compareTo(b, a));
+                    signOfBtoA = (int) Math.signum(strategy.compare(b, a));
                 } catch (final Exception exc) {
                     exceptionOnBtoACompare = true;
                 }
@@ -159,27 +156,15 @@ final class ConfigurableVerifier<A> {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void verifyEqualsToNullReturnsFalse(final List<A> instances) {
-        if (suppressEqualsToNullReturnsFalse)
-            return;
-
-        for (final A instance : instances) {
-            if (instance.equals(null)) {
-                throw new AssertionError("Instance is equal to null!");
-            }
-        }
-    }
-
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
-    private void verifyExceptionOnCompareToNull(final List<A> instances) {
+    @SuppressWarnings({"ConstantConditions"})
+    private void verifyExceptionOnComparingWithNull(final List<A> instances) {
         if (suppressExceptionOnCompareToNull)
             return;
 
         for (final A instance : instances) {
             boolean contractIsBroken;
             try {
-                compareStrategy.compareTo(instance, null);
+                strategy.compare(instance, null);
                 contractIsBroken = true;
             } catch (final Exception exc) {
                 // this should throw an exception

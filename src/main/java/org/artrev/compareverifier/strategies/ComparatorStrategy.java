@@ -11,12 +11,12 @@ import java.util.Comparator;
 public final class ComparatorStrategy<A> implements CompareStrategy<A> {
     private final Comparator<A> comparator;
 
-    ComparatorStrategy(final Comparator<A> comparator) {
+    public ComparatorStrategy(final Comparator<A> comparator) {
         this.comparator = comparator;
     }
 
     @Override
-    public int compareTo(final A first, final A second) {
+    public int compare(final A first, final A second) {
         return comparator.compare(first, second);
     }
 }
