@@ -1,10 +1,7 @@
 package org.artrev.compareverifier;
 
 import org.artrev.compareverifier.strategies.CompareStrategy;
-import org.artrev.compareverifier.verifications.InstancesAreNotNullVerification;
-import org.artrev.compareverifier.verifications.InstancesListNotNullVerification;
-import org.artrev.compareverifier.verifications.InstancesSizeVerification;
-import org.artrev.compareverifier.verifications.Verification;
+import org.artrev.compareverifier.verifications.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +56,8 @@ final class ConfigurableVerifier<A> {
         verifications.add(new InstancesListNotNullVerification<A>());
         verifications.add(new InstancesAreNotNullVerification<A>());
         verifications.add(new InstancesSizeVerification<A>());
+        if (!suppressConsistentWithEquals)
+            verifications.add(new ConsistencyWithEqualsVerification<A>(compareStrategy));
 
         for (final Verification<A> verification : verifications) {
             verification.verify(
@@ -67,11 +66,6 @@ final class ConfigurableVerifier<A> {
                     greaterInstances
             );
         }
-
-        // verify that the returned instances are consistent with equals
-        // we only check the instances created by the Equal instances creator
-        // as they are supposed to be the same in terms of equals implementation
-        verifyCompareToConsistentWithEquals(equalInstances);
 
         // verify that the returned instances return false when checked for equality with null
         verifyEqualsToNullReturnsFalse(lesserInstances);
