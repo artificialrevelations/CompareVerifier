@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A collection of functions for easy creation of {@link VerificationInstancesCreator}
+ * A collection of functions for easy creation of {@link VerificationInstancesProvider}
  * instances.
  * <p>
  * <b>Example Usage:</b>
@@ -46,7 +46,7 @@ import java.util.List;
  * }
  * </pre>
  *
- * @see VerificationInstancesCreator
+ * @see VerificationInstancesProvider
  * @see ComparableVerifier
  */
 public final class VerificationInstancesCreators {
@@ -55,16 +55,16 @@ public final class VerificationInstancesCreators {
     }
 
     /**
-     * Creates a {@link VerificationInstancesCreator} from the given array of
+     * Creates a {@link VerificationInstancesProvider} from the given array of
      * values.
      *
      * @param values values that should be returned by the Creator.
      * @param <A>    type of the instances returned by the Creator.
      * @param <B>    type of the instances returned by the Creator
-     * @return instance of {@link VerificationInstancesCreator}
+     * @return instance of {@link VerificationInstancesProvider}
      */
-    public static <A, B extends A> VerificationInstancesCreator<A> from(final B... values) {
-        return new VerificationInstancesCreator<A>() {
+    public static <A, B extends A> VerificationInstancesProvider<A> from(final B... values) {
+        return new VerificationInstancesProvider<A>() {
             @SuppressWarnings("unchecked")
             @Override
             public List<A> create() {
@@ -74,14 +74,14 @@ public final class VerificationInstancesCreators {
     }
 
     /**
-     * Creates a {@link VerificationInstancesCreator} that will return a List
+     * Creates a {@link VerificationInstancesProvider} that will return a List
      * with a null value.
      *
      * @param <A> type of the instances returned by the Creator.
-     * @return instance of {@link VerificationInstancesCreator}
+     * @return instance of {@link VerificationInstancesProvider}
      */
-    public static <A> VerificationInstancesCreator<A> nullValue() {
-        return new VerificationInstancesCreator<A>() {
+    public static <A> VerificationInstancesProvider<A> nullValue() {
+        return new VerificationInstancesProvider<A>() {
             @Override
             public List<A> create() {
                 return Collections.singletonList(null);
@@ -90,15 +90,15 @@ public final class VerificationInstancesCreators {
     }
 
     /**
-     * Creates a {@link VerificationInstancesCreator} that will return a null
+     * Creates a {@link VerificationInstancesProvider} that will return a null
      * List. This method is mainly handy for testing of the
      * {@link ComparableVerifier} implementation.
      *
      * @param <A> type of the instances returned by the Creator.
-     * @return instance of {@link VerificationInstancesCreator}
+     * @return instance of {@link VerificationInstancesProvider}
      */
-    public static <A> VerificationInstancesCreator<A> nullInstances() {
-        return new VerificationInstancesCreator<A>() {
+    public static <A> VerificationInstancesProvider<A> nullInstances() {
+        return new VerificationInstancesProvider<A>() {
             @Override
             public List<A> create() {
                 return null;
@@ -107,15 +107,15 @@ public final class VerificationInstancesCreators {
     }
 
     /**
-     * Creates a {@link VerificationInstancesCreator} that will return an empty
+     * Creates a {@link VerificationInstancesProvider} that will return an empty
      * List. This method is mainly handy for testing of the
      * {@link ComparableVerifier} implementation.
      *
      * @param <A> type of the instances returned by the Creator.
-     * @return instance of {@link VerificationInstancesCreator}
+     * @return instance of {@link VerificationInstancesProvider}
      */
-    public static <A> VerificationInstancesCreator<A> emptyInstances() {
-        return new VerificationInstancesCreator<A>() {
+    public static <A> VerificationInstancesProvider<A> emptyInstances() {
+        return new VerificationInstancesProvider<A>() {
             @Override
             public List<A> create() {
                 return Collections.emptyList();

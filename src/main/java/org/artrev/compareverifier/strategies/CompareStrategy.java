@@ -1,11 +1,11 @@
-package org.artrev.compareverifier;
-
-import java.util.Comparator;
+package org.artrev.compareverifier.strategies;
 
 /**
+ *
+ *
  * @param <A>
  */
-interface CompareStrategy<A> {
+public interface CompareStrategy<A> {
     /**
      * @param first
      * @param second

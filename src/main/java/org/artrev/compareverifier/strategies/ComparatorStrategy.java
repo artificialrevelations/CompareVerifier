@@ -1,16 +1,16 @@
-package org.artrev.compareverifier;
+package org.artrev.compareverifier.strategies;
 
 import java.util.Comparator;
 
 /**
- * @param <A>
+ * {@link CompareStrategy} implementation that is using an instance of {@link Comparator}
+ * to perform each comparison.
+ *
+ * @param <A> type of the values compared by a {@link Comparator}.
  */
-class ComparatorStrategy<A> implements CompareStrategy<A> {
+public final class ComparatorStrategy<A> implements CompareStrategy<A> {
     private final Comparator<A> comparator;
 
-    /**
-     * @param comparator
-     */
     ComparatorStrategy(final Comparator<A> comparator) {
         this.comparator = comparator;
     }

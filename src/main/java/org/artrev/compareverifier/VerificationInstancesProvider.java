@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @param <A> type of the returned instances
  */
-public interface VerificationInstancesCreator<A> {
+public interface VerificationInstancesProvider<A> {
     /**
      * Returns a List of instances that can be used by the
      * {@link ComparableVerifier}. Should not return a null List or a List that

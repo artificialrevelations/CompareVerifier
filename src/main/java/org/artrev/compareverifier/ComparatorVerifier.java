@@ -1,5 +1,7 @@
 package org.artrev.compareverifier;
 
+import org.artrev.compareverifier.strategies.ComparatorStrategy;
+
 import java.util.Comparator;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Comparator;
  * If any of the above checks fails then an {@link AssertionError} will be thrown
  * with an appropriate information about the cause.
  * <p>
- * {@code ComparableVerifier} works in tandem with {@link VerificationInstancesCreator}
+ * {@code ComparableVerifier} works in tandem with {@link VerificationInstancesProvider}
  * which describes a factory for the instances used in testing. Verifier needs
  * three kinds of instances:
  * <ul>
@@ -81,7 +83,7 @@ import java.util.Comparator;
  *
  * @param <A> type of the class under test
  * @see Comparable
- * @see VerificationInstancesCreator
+ * @see VerificationInstancesProvider
  * @see VerificationInstancesCreators
  */
 public class ComparatorVerifier<A, B extends Comparator<A>> {
@@ -89,9 +91,9 @@ public class ComparatorVerifier<A, B extends Comparator<A>> {
     private final ConfigurableVerifier<A> verifier;
 
     private ComparatorVerifier(final B comparator,
-                               final VerificationInstancesCreator<A> lesserCreator,
-                               final VerificationInstancesCreator<A> equalCreator,
-                               final VerificationInstancesCreator<A> greaterCreator) {
+                               final VerificationInstancesProvider<A> lesserCreator,
+                               final VerificationInstancesProvider<A> equalCreator,
+                               final VerificationInstancesProvider<A> greaterCreator) {
         verifier = new ConfigurableVerifier<A>(
                 new ComparatorStrategy<A>(comparator),
                 lesserCreator,
@@ -111,9 +113,9 @@ public class ComparatorVerifier<A, B extends Comparator<A>> {
      */
     public static <A, B extends Comparator<A>> ComparatorVerifier<A, B> forInstances(
             final B comparator,
-            final VerificationInstancesCreator<A> lesserCreator,
-            final VerificationInstancesCreator<A> equalCreator,
-            final VerificationInstancesCreator<A> greaterCreator) {
+            final VerificationInstancesProvider<A> lesserCreator,
+            final VerificationInstancesProvider<A> equalCreator,
+            final VerificationInstancesProvider<A> greaterCreator) {
 
         return new ComparatorVerifier<A, B>(
                 comparator, lesserCreator, equalCreator, greaterCreator

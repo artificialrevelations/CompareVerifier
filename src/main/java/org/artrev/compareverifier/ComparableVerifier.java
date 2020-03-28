@@ -15,6 +15,8 @@
  */
 package org.artrev.compareverifier;
 
+import org.artrev.compareverifier.strategies.ComparableStrategy;
+
 /**
  * {@code ComparableVerifier} is a tool that can be used in unit tests to verify
  * if certain implementation of the {@link Comparable} interface is correct.
@@ -30,7 +32,7 @@ package org.artrev.compareverifier;
  * If any of the above checks fails then an {@link AssertionError} will be thrown
  * with an appropriate information about the cause.
  * <p>
- * {@code ComparableVerifier} works in tandem with {@link VerificationInstancesCreator}
+ * {@code ComparableVerifier} works in tandem with {@link VerificationInstancesProvider}
  * which describes a factory for the instances used in testing. Verifier needs
  * three kinds of instances:
  * <ul>
@@ -94,16 +96,16 @@ package org.artrev.compareverifier;
  *
  * @param <A> type of the class under test
  * @see Comparable
- * @see VerificationInstancesCreator
+ * @see VerificationInstancesProvider
  * @see VerificationInstancesCreators
  */
 public final class ComparableVerifier<A extends Comparable<A>> {
 
     private final ConfigurableVerifier<A> verifier;
 
-    private ComparableVerifier(final VerificationInstancesCreator<A> lesserCreator,
-                               final VerificationInstancesCreator<A> equalCreator,
-                               final VerificationInstancesCreator<A> greaterCreator) {
+    private ComparableVerifier(final VerificationInstancesProvider<A> lesserCreator,
+                               final VerificationInstancesProvider<A> equalCreator,
+                               final VerificationInstancesProvider<A> greaterCreator) {
         verifier = new ConfigurableVerifier<A>(
                 new ComparableStrategy<A>(),
                 lesserCreator,
@@ -122,9 +124,9 @@ public final class ComparableVerifier<A extends Comparable<A>> {
      * @return instance of {@link ComparableVerifier}
      */
     public static <A extends Comparable<A>> ComparableVerifier<A> forInstances(
-            final VerificationInstancesCreator<A> lesserCreator,
-            final VerificationInstancesCreator<A> equalCreator,
-            final VerificationInstancesCreator<A> greaterCreator) {
+            final VerificationInstancesProvider<A> lesserCreator,
+            final VerificationInstancesProvider<A> equalCreator,
+            final VerificationInstancesProvider<A> greaterCreator) {
 
         return new ComparableVerifier<A>(
                 lesserCreator, equalCreator, greaterCreator

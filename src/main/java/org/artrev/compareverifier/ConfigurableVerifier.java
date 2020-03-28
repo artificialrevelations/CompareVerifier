@@ -1,32 +1,30 @@
 package org.artrev.compareverifier;
 
+import org.artrev.compareverifier.strategies.CompareStrategy;
+import org.artrev.compareverifier.verifications.InstancesAreNotNullVerification;
+import org.artrev.compareverifier.verifications.InstancesListNotNullVerification;
+import org.artrev.compareverifier.verifications.InstancesSizeVerification;
+import org.artrev.compareverifier.verifications.Verification;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
 
-/**
- * @param <A>
- */
 final class ConfigurableVerifier<A> {
-    private final VerificationInstancesCreator<A> lesserCreator;
-    private final VerificationInstancesCreator<A> greaterCreator;
-    private final VerificationInstancesCreator<A> equalCreator;
+    private final VerificationInstancesProvider<A> lesserCreator;
+    private final VerificationInstancesProvider<A> greaterCreator;
+    private final VerificationInstancesProvider<A> equalCreator;
     private final CompareStrategy<A> compareStrategy;
 
     private boolean suppressConsistentWithEquals = false;
     private boolean suppressEqualsToNullReturnsFalse = false;
     private boolean suppressExceptionOnCompareToNull = false;
 
-    /**
-     * @param compareStrategy
-     * @param lesserCreator
-     * @param equalCreator
-     * @param greaterCreator
-     */
     ConfigurableVerifier(final CompareStrategy<A> compareStrategy,
-                         final VerificationInstancesCreator<A> lesserCreator,
-                         final VerificationInstancesCreator<A> equalCreator,
-                         final VerificationInstancesCreator<A> greaterCreator) {
+                         final VerificationInstancesProvider<A> lesserCreator,
+                         final VerificationInstancesProvider<A> equalCreator,
+                         final VerificationInstancesProvider<A> greaterCreator) {
         this.lesserCreator = lesserCreator;
         this.greaterCreator = greaterCreator;
         this.equalCreator = equalCreator;
@@ -49,12 +47,26 @@ final class ConfigurableVerifier<A> {
         // verify that the instances creators are not null (obvious check)
         // verify that the instances List is not null (obvious check)
         // verify that the instances List has at least one element (obvious check)
-        final List<A> lesserInstances =
-                verifyInstancesCreator(lesserCreator, "lesser");
-        final List<A> equalInstances =
-                verifyInstancesCreator(equalCreator, "equal");
-        final List<A> greaterInstances =
-                verifyInstancesCreator(greaterCreator, "greater");
+        verifyInstancesProviders(lesserCreator, "lesser");
+        verifyInstancesProviders(equalCreator, "equal");
+        verifyInstancesProviders(greaterCreator, "greater");
+
+        final List<A> lesserInstances = lesserCreator.create();
+        final List<A> equalInstances = equalCreator.create();
+        final List<A> greaterInstances = greaterCreator.create();
+
+        final List<Verification<A>> verifications = new ArrayList<Verification<A>>();
+        verifications.add(new InstancesListNotNullVerification<A>());
+        verifications.add(new InstancesAreNotNullVerification<A>());
+        verifications.add(new InstancesSizeVerification<A>());
+
+        for (final Verification<A> verification : verifications) {
+            verification.verify(
+                    lesserInstances,
+                    equalInstances,
+                    greaterInstances
+            );
+        }
 
         // verify that the returned instances are consistent with equals
         // we only check the instances created by the Equal instances creator
@@ -185,36 +197,14 @@ final class ConfigurableVerifier<A> {
         }
     }
 
-    private void verifyCompareToConsistentWithEquals(final List<A> instances) {
-        if (suppressConsistentWithEquals)
-            return;
-
-        final A instance = instances.get(0);
-        for (final A a : instances) {
-            final boolean equals = instance.equals(a);
-            final boolean compareTo = compareStrategy.compareTo(instance, a) == 0;
-            if (equals != compareTo)
-                throw new AssertionError("Comparing is not consistent with equals!");
-        }
-    }
-
-    private static <A> List<A> verifyInstancesCreator(final VerificationInstancesCreator<A> creator,
-                                                      final String type) {
-        if (null == creator)
-            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot be null!");
-
-        final List<A> instances = creator.create();
-        if (null == instances)
-            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot return null instances!");
-
-        if (instances.isEmpty())
-            throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot return empty list of instances!");
-
-        for (final A instance : instances) {
-            if (null == instance)
-                throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot contain null instances!");
-        }
-
-        return instances;
+    private static <A> void verifyInstancesProviders(final VerificationInstancesProvider<A> provider,
+                                                     final String instancesType) {
+        if (null == provider)
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Provider for %s instances cannot be null!",
+                            instancesType
+                    )
+            );
     }
 }
