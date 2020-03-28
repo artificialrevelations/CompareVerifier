@@ -49,8 +49,8 @@ import java.util.List;
  * @see VerificationInstancesProvider
  * @see ComparableVerifier
  */
-public final class VerificationInstancesCreators {
-    private VerificationInstancesCreators() {
+public final class VerificationInstancesProviders {
+    private VerificationInstancesProviders() {
         throw new IllegalStateException("VerificationInstancesCreators should not be instantiated!");
     }
 

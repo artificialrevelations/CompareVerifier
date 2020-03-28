@@ -97,7 +97,7 @@ import org.artrev.compareverifier.strategies.ComparableStrategy;
  * @param <A> type of the class under test
  * @see Comparable
  * @see VerificationInstancesProvider
- * @see VerificationInstancesCreators
+ * @see VerificationInstancesProviders
  */
 public final class ComparableVerifier<A extends Comparable<A>> {
 

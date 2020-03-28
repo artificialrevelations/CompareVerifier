@@ -84,7 +84,7 @@ import java.util.Comparator;
  * @param <A> type of the class under test
  * @see Comparable
  * @see VerificationInstancesProvider
- * @see VerificationInstancesCreators
+ * @see VerificationInstancesProviders
  */
 public class ComparatorVerifier<A, B extends Comparator<A>> {
 
