@@ -15,6 +15,7 @@
  */
 package org.artrev.compareverifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -220,8 +221,47 @@ public final class ComparableVerifier<A extends Comparable<A>> {
 
         // verify that sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
         verifyTransitivity(lesserInstances, equalInstances, greaterInstances);
+        // verify that sgn(a.compareTo(c)) == 0 && sgn(b.compareTo(c)) == 0 => sgn(a.compareTo(b)) == 0
+        verifyEqualsTransitivity(equalInstances);
+    }
 
-        // TODO: test sgn(a.compareTo(c)) == sgn(b.compareTo(c)) => sgn(a.compareTo(b)) == 0
+    private void verifyEqualsTransitivity(List<A> equalInstances) {
+        if (equalInstances.size() < 3) {
+            ArrayList<A> target = new ArrayList<A>();
+            while (target.size() < 3) target.addAll(equalInstances);
+            checkTriples(target);
+        } else {
+            checkTriples(equalInstances);
+        }
+    }
+
+    private void checkTriples(List<A> equalInstances) {
+        for (int i = 0; i < equalInstances.size(); i++) {
+            for (int j = i + 1; j < equalInstances.size(); j++) {
+                for (int k = j + 1; k < equalInstances.size(); k++) {
+                    A first = equalInstances.get(i);
+                    A second = equalInstances.get(j);
+                    A third = equalInstances.get(k);
+                    checkTransitiveEqualityOfTriple(first, second, third);
+                }
+            }
+        }
+    }
+
+    private void checkTransitiveEqualityOfTriple(A first, A second, A third) {
+        if (first.compareTo(third) != 0)
+            throw new AssertionError(format("items %s and %s are not equal while should be", first, third));
+        if (second.compareTo(third) != 0)
+            throw new AssertionError(format("items %s and %s are not equal while should be", first, third));
+        if (first.compareTo(second) != 0)
+            throw new AssertionError(
+                    format("Equality is not transitive: %s equals to %s, %s equals to %s, but %s is not equal to %s",
+                            first,
+                            third,
+                            second,
+                            third,
+                            first,
+                            second));
     }
 
     // sgn(a.compareTo(b)) > 0 && sgn(b.compareTo(c)) > 0 => sgn(a.compareTo(c)) > 0
@@ -288,7 +328,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 }
                 // if sgn(a.compareTo(b)) != -sgn(b.compareTo(a))
                 if (signOfAtoB != -signOfBtoA) {
-                        throw new AssertionError("Instances do not implement a total order!");
+                    throw new AssertionError("Instances do not implement a total order!");
                 }
             }
         }
