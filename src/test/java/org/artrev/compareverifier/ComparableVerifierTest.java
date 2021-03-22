@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
 
+import static java.lang.Math.abs;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Enclosed.class)
@@ -755,6 +756,168 @@ public class ComparableVerifierTest {
             ComparableVerifier
                     .forInstances(lesser, equal, greater)
                     .verify();
+        }
+
+    }
+
+    public static class EqualsVerification {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Test
+        public void should_not_fail_when_all_equal_elements_are_equal() {
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new Correct(0)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42),
+                            new Correct(42),
+                            new Correct(42),
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(101),
+                            new Correct(102)
+                    );
+
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+
+        }
+
+        @Test
+        public void should_not_fail_when_there_there_is_only_1_equal_element() {
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new Correct(0)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(101),
+                            new Correct(102)
+                    );
+
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+
+        }
+
+        @Test
+        public void should_not_fail_when_there_there_are_2_equal_elements() {
+            final VerificationInstancesCreator<Correct> lesser =
+                    VerificationInstancesCreators.from(
+                            new Correct(0)
+                    );
+            final VerificationInstancesCreator<Correct> equal =
+                    VerificationInstancesCreators.from(
+                            new Correct(42),
+                            new Correct(42)
+                    );
+            final VerificationInstancesCreator<Correct> greater =
+                    VerificationInstancesCreators.from(
+                            new Correct(101),
+                            new Correct(102)
+                    );
+
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .verify();
+
+        }
+
+        private interface TestComparable extends Comparable<TestComparable> {
+        }
+
+        private static class LesserTestComparable implements TestComparable {
+
+            @Override
+            public int compareTo(TestComparable o) {
+                if (o == null) throw new NullPointerException();
+                if (o instanceof GreaterTestComparable || o instanceof EqualTestComparable) return -1;
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return "lesser";
+            }
+        }
+
+        private static class GreaterTestComparable implements TestComparable {
+
+            @Override
+            public int compareTo(TestComparable o) {
+                if (o == null) throw new NullPointerException();
+                if (o instanceof LesserTestComparable || o instanceof EqualTestComparable) return 1;
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return "greater";
+            }
+        }
+
+        private static class EqualTestComparable implements TestComparable {
+            private final int initializer;
+
+            private EqualTestComparable(int initializer) {
+                this.initializer = initializer;
+            }
+
+            @Override
+            public int compareTo(TestComparable o) {
+                if (o == null) throw new NullPointerException();
+                if (o instanceof LesserTestComparable) return 1;
+                if (o instanceof GreaterTestComparable) return -1;
+                if (o instanceof EqualTestComparable) {
+                    EqualTestComparable that = (EqualTestComparable) o;
+                    if (abs(this.initializer - that.initializer) > 3) return 0;
+                    else return this.initializer - that.initializer;
+                }
+                throw new RuntimeException("Not supported things to compare");
+            }
+
+            @Override
+            public String toString() {
+                return "equals(" + initializer + ")";
+            }
+        }
+
+        @Test
+        public void should_fail_when_elements_are_not_transitively_equal() {
+            final VerificationInstancesCreator<TestComparable> lesser =
+                    VerificationInstancesCreators.from(
+                            new LesserTestComparable()
+                    );
+            final VerificationInstancesCreator<TestComparable> equal =
+                    VerificationInstancesCreators.from(
+                            new EqualTestComparable(1),
+                            new EqualTestComparable(2),
+                            new EqualTestComparable(7)
+                    );
+            final VerificationInstancesCreator<TestComparable> greater =
+                    VerificationInstancesCreators.from(
+                            new GreaterTestComparable()
+                    );
+
+            expectedException.expect(AssertionError.class);
+            expectedException.expectMessage("equals(1) equals to equals(7), equals(2) equals to equals(7), but equals(1) is not equal to equals(2)");
+
+            ComparableVerifier
+                    .forInstances(lesser, equal, greater)
+                    .suppressConsistentWithEquals(true)
+                    .verify();
+
         }
     }
 }
