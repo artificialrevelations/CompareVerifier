@@ -41,10 +41,10 @@ import static java.lang.String.format;
  * <li><b>equal instances</b> - at least two objects that are equal but are not
  * of the same reference</li>
  * <li><b>lesser instances</b> - at least one (the more the better) object that is
- * "lesser" then the object(s) returned by the <b>equal instances</b> and by the
+ * "lesser" than the object(s) returned by the <b>equal instances</b> and by the
  * <b>greater instances</b></li>
  * <li><b>greater instances</b> - at least one (the more the better) object that
- * is "greater" then the object(s) returned by the <b>equal instances</b> and
+ * is "greater" than the object(s) returned by the <b>equal instances</b> and
  * by the <b>less instances</b></li>
  * </ul>
  * <p>
@@ -110,9 +110,11 @@ public final class ComparableVerifier<A extends Comparable<A>> {
     private boolean suppressEqualsToNullReturnsFalse = false;
     private boolean suppressExceptionOnCompareToNull = false;
 
-    private ComparableVerifier(final VerificationInstancesCreator<A> lesserCreator,
-                               final VerificationInstancesCreator<A> equalCreator,
-                               final VerificationInstancesCreator<A> greaterCreator) {
+    private ComparableVerifier(
+            final VerificationInstancesCreator<A> lesserCreator,
+            final VerificationInstancesCreator<A> equalCreator,
+            final VerificationInstancesCreator<A> greaterCreator
+    ) {
         this.lesserCreator = lesserCreator;
         this.greaterCreator = greaterCreator;
         this.equalCreator = equalCreator;
@@ -130,8 +132,8 @@ public final class ComparableVerifier<A extends Comparable<A>> {
     public static <A extends Comparable<A>> ComparableVerifier<A> forInstances(
             final VerificationInstancesCreator<A> lesserCreator,
             final VerificationInstancesCreator<A> equalCreator,
-            final VerificationInstancesCreator<A> greaterCreator) {
-
+            final VerificationInstancesCreator<A> greaterCreator
+    ) {
         return new ComparableVerifier<A>(
                 lesserCreator, equalCreator, greaterCreator
         );
@@ -141,7 +143,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
      * Causes that the (a.compareTo(b)==0) == (a.equals(b)) won't be verified.
      * <p>
      * According to the {@link Comparable} documentation it is strongly
-     * recommended, but not strictly required that aforementioned rule is obeyed.
+     * recommended, but not strictly required that the aforementioned rule is obeyed.
      * <p>
      * It is advised that any class that implements the {@link Comparable}
      * interface and violates this particular rule should clearly indicate this
@@ -187,9 +189,9 @@ public final class ComparableVerifier<A extends Comparable<A>> {
      * the {@link Comparable} interfaces is correctly implemented.
      */
     public void verify() {
-        // verify that the instances creators are not null (obvious check)
-        // verify that the instances List is not null (obvious check)
-        // verify that the instances List has at least one element (obvious check)
+        // verify that the instances' creators are not null (obvious check)
+        // verify that the instances' List is not null (obvious check)
+        // verify that the instances' List has at least one element (obvious check)
         final List<A> lesserInstances =
                 verifyInstancesCreator(lesserCreator, "lesser");
         final List<A> equalInstances =
@@ -231,14 +233,14 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         for (final A la : lesser) {
             for (final A ea : equal) {
                 for (final A ga : greater) {
-                    final int equal_lesser = (int) Math.signum(ea.compareTo(la));
-                    final int greater_equal = (int) Math.signum(ga.compareTo(ea));
-                    final int greater_lesser = (int) Math.signum(ga.compareTo(la));
+                    final int equalToLesser = (int) Math.signum(ea.compareTo(la));
+                    final int greaterToEqual = (int) Math.signum(ga.compareTo(ea));
+                    final int greaterToLesser = (int) Math.signum(ga.compareTo(la));
 
                     final boolean isTransitive =
-                            equal_lesser > 0
-                                    && greater_equal > 0
-                                    && greater_lesser > 0;
+                            equalToLesser > 0
+                                    && greaterToEqual > 0
+                                    && greaterToLesser > 0;
 
                     if (!isTransitive) {
                         throw new AssertionError(
@@ -288,7 +290,7 @@ public final class ComparableVerifier<A extends Comparable<A>> {
                 }
                 // if sgn(a.compareTo(b)) != -sgn(b.compareTo(a))
                 if (signOfAtoB != -signOfBtoA) {
-                        throw new AssertionError("Instances do not implement a total order!");
+                    throw new AssertionError("Instances do not implement a total order!");
                 }
             }
         }
@@ -339,8 +341,10 @@ public final class ComparableVerifier<A extends Comparable<A>> {
         }
     }
 
-    private static <A> List<A> verifyInstancesCreator(final VerificationInstancesCreator<A> creator,
-                                                      final String type) {
+    private static <A> List<A> verifyInstancesCreator(
+            final VerificationInstancesCreator<A> creator,
+            final String type
+    ) {
         if (null == creator)
             throw new IllegalArgumentException("VerificationInstancesCreator (" + type + ") cannot be null!");
 
