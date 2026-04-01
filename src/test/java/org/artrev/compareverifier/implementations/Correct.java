@@ -42,7 +42,7 @@ public class Correct implements Comparable<Correct> {
 
     @Override
     public int compareTo(final Correct other) {
-        return value - other.value;
+        return Integer.compare(value, other.value);
     }
 
     @Override
