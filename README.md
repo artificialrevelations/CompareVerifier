@@ -4,7 +4,7 @@
 # CompareVerifier
 CompareVerifier is a pure Java library that can be used in Junit tests to verify that classes implementing `Comparable` interfaces are defined correctly.
 
-By default verification includes:
+By default, verification includes:
  * compareTo being consistent with equals
  * compareTo failing on a null argument
  * satisfying `sgn(a.compareTo(b)) == -sgn(b.compareTo(a))`
@@ -16,7 +16,7 @@ Usage
 ```java
     final VerificationInstancesCreator<BigDecimal> lesserCreator =
             VerificationInstancesCreators.from(
-                new BigDecimal("0.0"), // smaller then the objects returned by
+                new BigDecimal("0.0"), // smaller than the objects returned by
                 new BigDecimal("1.0"), // both equal creator and greater creator
                 new BigDecimal("2.0")
             );
@@ -27,7 +27,7 @@ Usage
             );
     final VerificationInstancesCreator<BigDecimal> greaterCreator =
             VerificationInstancesCreators.from(
-                new BigDecimal("101.0"), // larger then the objects returned by
+                new BigDecimal("101.0"), // larger than the objects returned by
                 new BigDecimal("202.0"), // both equal creator and lesser creator
                 new BigDecimal("303.0")
 	    );
@@ -38,12 +38,12 @@ Usage
 ```
 
 Where:
-- `lessInstancesCreator` creates instance of the class implementing `Comparable` that are less then instances created by `equalInstancesCreator`
-- `equalInstancesCreator` creates instances that should be equal to each other, they should be greater then those created by
-`lessInstancesCreator` and less then those created by `greaterInstancesCreator`
-- `greaterInstancesCreator` creates instances that should be greater then those created by the two other creators
+- `lessInstancesCreator` creates instance of the class implementing `Comparable` that are less than instances created by `equalInstancesCreator`
+- `equalInstancesCreator` creates instances that should be equal to each other, they should be greater than those created by
+`lessInstancesCreator` and less than those created by `greaterInstancesCreator`
+- `greaterInstancesCreator` creates instances that should be greater than those created by the two other creators
 
-It's possible to disable one or more of the default verification checks by using set of "suppress" methods.
+It's possible to disable one or more of the default verification checks by using a set of "suppress" methods.
 
 ```java
     ComparableVerifier
@@ -56,7 +56,7 @@ It's possible to disable one or more of the default verification checks by using
 Download
 --------
 
-You can use this library in conjunction with JUnit `4.12`. There are two ways of getting the library:
+You can use this library in conjunction with JUnit `4.13.2`. There are two ways of getting the library:
 - through [releases](https://github.com/artificialrevelations/CompareVerifier/releases)
 - through the use of [JITPACK.io](https://jitpack.io/)
 
@@ -71,7 +71,7 @@ To configure your project with JITPACK you need to in your `build.gradle` file a
 	}
 ```
 
-Add `ComparatorVerifier` to the list of your test dependencies:
+Add `CompareVerifier` to the list of your test dependencies:
 
 ```groovy
 	dependencies {
